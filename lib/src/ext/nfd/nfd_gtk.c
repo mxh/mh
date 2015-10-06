@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <string.h>
 #include <gtk/gtk.h>
-#include "ext/nfd/nfd.h"
+#include "mh/ext/nfd/nfd.h"
 #include "nfd_common.h"
 
 

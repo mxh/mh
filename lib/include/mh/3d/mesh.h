@@ -1,8 +1,8 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
 #include <vector>
 
@@ -10,11 +10,11 @@
 
 #include "eigen3/Eigen/Geometry"
 
-#include "3d/vertex.h"
-#include "3d/halfedge.h"
-#include "3d/face.h"
+#include "mh/3d/vertex.h"
+#include "mh/3d/halfedge.h"
+#include "mh/3d/face.h"
 
-namespace lp
+namespace mh
 {
 
 class Mesh
@@ -100,6 +100,6 @@ private:
 
 }; // class Mesh
 
-} // namespace lp
+} // namespace mh
 
 #endif /* MESH_H */

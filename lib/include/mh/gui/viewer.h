@@ -1,18 +1,18 @@
 #ifndef VIEWER_H
 #define VIEWER_H 
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "ext/imgui/imgui.h"
-#include "ext/imgui/imgui_impl_glfw.h"
+#include "mh/ext/imgui/imgui.h"
+#include "mh/ext/imgui/imgui_impl_glfw.h"
 
-#include "gpu/shader.h"
+#include "mh/gpu/shader.h"
 
-namespace lp
+namespace mh
 {
 
 inline void glfwErrorCallback(int error, const char * desc)
@@ -81,6 +81,6 @@ private:
 
 
 
-} // namespace lp
+} // namespace mh
 
 #endif /* VIEWER_H */

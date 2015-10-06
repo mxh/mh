@@ -1,6 +1,6 @@
-#include "3d/util.h"
+#include "mh/3d/util.h"
 
-namespace lp
+namespace mh
 {
 
 float getFittingSphereRadius(const std::vector<Eigen::Vector3f> & verts, Eigen::Vector3f center)
@@ -14,4 +14,4 @@ float getFittingSphereRadius(const std::vector<Eigen::Vector3f> & verts, Eigen::
     return radius;
 }
 
-} // namespace lp
+} // namespace mh

@@ -1,17 +1,17 @@
 #ifndef CAMERA_H
 #define CAMERA_H 
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
-#include "ext/imgui/imgui.h"
-#include "ext/imgui/imgui_impl_glfw.h"
+#include "mh/ext/imgui/imgui.h"
+#include "mh/ext/imgui/imgui_impl_glfw.h"
 
-#include "3d/scene.h"
+#include "mh/3d/scene.h"
 
 #include "eigen3/Eigen/Geometry"
 
-namespace lp
+namespace mh
 {
 
 class Camera
@@ -61,5 +61,5 @@ private:
 void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f center);
 void setCameraLookatScene(Camera & camera, Scene & scene);
 
-} // namespace lp
+} // namespace mh
 #endif /* CAMERA_H */

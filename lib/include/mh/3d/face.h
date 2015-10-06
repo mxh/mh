@@ -1,13 +1,13 @@
 #ifndef FACE_H
 #define FACE_H 
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
-#include "3d/halfedge.h"
-#include "3d/vertex.h"
+#include "mh/3d/halfedge.h"
+#include "mh/3d/vertex.h"
 
-namespace lp
+namespace mh
 {
 
 class Vertex;
@@ -35,6 +35,6 @@ private:
 
 }; // class Face
 
-} // namespace lp
+} // namespace mh
 
 #endif /* FACE_H */

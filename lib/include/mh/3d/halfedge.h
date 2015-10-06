@@ -1,10 +1,10 @@
 #ifndef HALFEDGE_H
 #define HALFEDGE_H 
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
-namespace lp
+namespace mh
 {
 
 class Face;
@@ -30,6 +30,6 @@ private:
 
 }; // class HalfEdge
 
-} // namespace lp
+} // namespace mh
 
 #endif /* HALFEDGE_H */

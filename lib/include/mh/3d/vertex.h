@@ -1,10 +1,10 @@
 #ifndef VERTEX_H
 #define VERTEX_H 
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
-namespace lp
+namespace mh
 {
 
 class HalfEdge;
@@ -42,6 +42,6 @@ private:
 
 }; // class Vertex
 
-} // namespace lp
+} // namespace mh
 
 #endif /* VERTEX_H */

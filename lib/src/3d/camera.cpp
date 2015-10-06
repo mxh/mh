@@ -1,8 +1,8 @@
 #include <algorithm>
 
-#include "3d/camera.h"
-#include "3d/mesh.h"
-#include "3d/util.h"
+#include "mh/3d/camera.h"
+#include "mh/3d/mesh.h"
+#include "mh/3d/util.h"
 
 namespace
 {
@@ -41,7 +41,7 @@ namespace
     }
 }
 
-namespace lp
+namespace mh
 {
 
 Eigen::Matrix4f Camera::getCameraToClip(void)
@@ -103,6 +103,11 @@ void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f 
 
     camera.setPosition(camera.getPosition() + position_delta);
 
+    if (io.MouseWheel != 0)
+    {
+        camera.setFOV(camera.getFOV() + (io.MouseWheel * LP_DEFAULT_ZOOM_SPEED));
+    }
+
     if (!(io.MouseDown[0] || io.MouseDown[2]) || ImGui::IsMouseHoveringAnyWindow())
     {
         return;
@@ -113,8 +118,6 @@ void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f 
         ImVec2 mouseDelta = io.MouseDelta;
         float yawAngle   = -mouseDelta.x * camera.getSensitivity();
         float pitchAngle = -mouseDelta.y * camera.getSensitivity();
-
-        std::cout << camera.getSensitivity() << std::endl;
 
         Eigen::Quaternionf rotation = Eigen::AngleAxisf(pitchAngle, camera.getForward().cross(camera.getUp()).normalized()) *
                                       Eigen::AngleAxisf(yawAngle, camera.getUp());
@@ -155,4 +158,4 @@ void setCameraLookatScene(Camera & camera, Scene & scene)
     camera.setFar(dist + r);
 }
 
-} // namespace lp
+} // namespace mh

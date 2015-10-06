@@ -12,9 +12,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "ext/imgui/imgui.h"
+#include "mh/ext/imgui/imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "ext/imgui/imgui_internal.h"
+#include "mh/ext/imgui/imgui_internal.h"
 
 #include <stdio.h>      // vsnprintf, sscanf, printf
 #include <new>          // new (ptr)
@@ -54,7 +54,7 @@ namespace IMGUI_STB_NAMESPACE
 #define STBRP_STATIC
 #define STB_RECT_PACK_IMPLEMENTATION
 #endif
-#include "ext/imgui/stb_rect_pack.h"
+#include "mh/ext/imgui/stb_rect_pack.h"
 
 #define STBTT_malloc(x,u)  ((void)(u), ImGui::MemAlloc(x))
 #define STBTT_free(x,u)    ((void)(u), ImGui::MemFree(x))
@@ -65,7 +65,7 @@ namespace IMGUI_STB_NAMESPACE
 #else
 #define STBTT_DEF extern
 #endif
-#include "ext/imgui/stb_truetype.h"
+#include "mh/ext/imgui/stb_truetype.h"
 
 #ifdef __clang__
 #pragma clang diagnostic pop

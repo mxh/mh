@@ -1,6 +1,6 @@
-#include "io/meshio.h"
+#include "mh/io/meshio.h"
 
-namespace lp
+namespace mh
 {
 
 Mesh convertFromAssimp(const aiMesh * inputMesh)
@@ -54,4 +54,4 @@ std::vector<std::shared_ptr<Mesh> > loadMeshesFromOBJ(std::string path)
 }
 
 
-} // namespace lp
+} // namespace mh

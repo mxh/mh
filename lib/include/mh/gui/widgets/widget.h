@@ -1,12 +1,12 @@
 #ifndef WIDGET_H
 #define WIDGET_H 
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
 #include <string>
 
-namespace lp
+namespace mh
 {
 
 class Widget
@@ -31,6 +31,6 @@ private:
 
 }; // class Widget
 
-} // namespace lp
+} // namespace mh
 
 #endif /* WIDGET_H */

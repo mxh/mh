@@ -1,6 +1,6 @@
-#include "gui/viewer.h"
+#include "mh/gui/viewer.h"
 
-namespace lp
+namespace mh
 {
 
 int Viewer::baseInit(void)
@@ -53,4 +53,4 @@ void Viewer::pollSize(void)
     glfwGetFramebufferSize(m_window, &m_width, &m_height);
 }
 
-} // namespace lp
+} // namespace mh

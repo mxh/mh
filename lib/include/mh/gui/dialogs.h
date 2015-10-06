@@ -1,9 +1,9 @@
 #ifndef DIALOGS_H
 #define DIALOGS_H 
 
-#include "ext/nfd/nfd.h"
+#include "mh/ext/nfd/nfd.h"
 
-namespace lp
+namespace mh
 {
 
 inline std::string openFileDialog(const std::string & filters)
@@ -22,6 +22,6 @@ inline std::string openFileDialog(const std::string & filters)
     return path;
 }
 
-} // namespace lp
+} // namespace mh
 
 #endif /* DIALOGS_H */

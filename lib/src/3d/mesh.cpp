@@ -1,7 +1,7 @@
 #include <map>
 #include <vector>
 
-#include "3d/mesh.h"
+#include "mh/3d/mesh.h"
 
 #define LP_GEN_ARRAY_BUF(ID, TYPE, SIZE, START, GLTYPE, WIDTH, LOC) \
     glGenBuffers(1, &ID); \
@@ -16,7 +16,7 @@
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID); \
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(TYPE) * SIZE, START, GL_STATIC_DRAW)
 
-namespace lp
+namespace mh
 {
 
 Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
@@ -240,4 +240,4 @@ Eigen::Affine3f Mesh::getModelToWorld(void) const
     return static_cast<Eigen::Affine3f>(Eigen::Translation3f(m_position));
 }
 
-} // namespace lp
+} // namespace mh

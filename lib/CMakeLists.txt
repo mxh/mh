@@ -83,7 +83,7 @@ SET(MH_VERSION
 
 SET(INSTALL_LIB_DIR     lib          CACHE PATH "Installation directory for libraries")
 SET(INSTALL_INCLUDE_DIR include      CACHE PATH "Installation directory for header files")
-SET(INSTALL_CMAKE_DIR   lib/CMake/MH CACHE PATH "Installation directory for CMake files")
+SET(INSTALL_CMAKE_DIR   lib/cmake/MH CACHE PATH "Installation directory for CMake files")
 
 FOREACH(p LIB INCLUDE CMAKE)
     SET(var INSTALL_${p}_DIR)
@@ -97,13 +97,22 @@ EXPORT(PACKAGE MH)
 
 FILE(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
     "${INSTALL_INCLUDE_DIR}")
+FILE(RELATIVE_PATH REL_LIB_DIR "${INSTALL_CMAKE_DIR}"
+    "${INSTALL_LIB_DIR}")
 
+# include and lib dirs for build tree
 SET(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include")
+SET(CONF_LIB_DIRS "${PROJECT_BINARY_DIR}")
 CONFIGURE_FILE(MHConfig.cmake.in
     "${PROJECT_BINARY_DIR}/MHConfig.cmake" @ONLY)
+
+# include and lib dirs for install tree
 SET(CONF_INCLUDE_DIRS "\${MH_CMAKE_DIR}/${REL_INCLUDE_DIR}")
+SET(CONF_LIB_DIRS "\${MH_CMAKE_DIR}/${REL_LIB_DIR}")
 CONFIGURE_FILE(MHConfig.cmake.in
     "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/MHConfig.cmake" @ONLY)
+
+
 CONFIGURE_FILE(MHConfigVersion.cmake.in
     "${PROJECT_BINARY_DIR}/MHConfigVersion.cmake" @ONLY)
 
@@ -115,8 +124,12 @@ INSTALL(FILES
 INSTALL(TARGETS mh
     EXPORT MHTargets
     LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT shlib
-    PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}/mh" COMPONENT dev
 )
+
+INSTALL(DIRECTORY "${PROJECT_SOURCE_DIR}/include/mh"
+        DESTINATION "${INSTALL_INCLUDE_DIR}"
+        PATTERN "*.h"
+        PATTERN "*.hpp")
 
 INSTALL(EXPORT MHTargets DESTINATION
     "${INSTALL_CMAKE_DIR}" COMPONENT dev)

@@ -1,9 +1,9 @@
-#include "gui/widgets/widget.h"
+#include "mh/gui/widgets/widget.h"
 
-#include "ext/imgui/imgui.h"
-#include "ext/imgui/imgui_impl_glfw.h"
+#include "mh/ext/imgui/imgui.h"
+#include "mh/ext/imgui/imgui_impl_glfw.h"
 
-namespace lp
+namespace mh
 {
 
 void Widget::draw(void)
@@ -35,4 +35,4 @@ void Widget::postdraw(void)
     ImGui::End();
 }
 
-} // namespace lp
+} // namespace mh

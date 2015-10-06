@@ -1,4 +1,4 @@
-#include "gpu/shader.h"
+#include "mh/gpu/shader.h"
 
 // Functions from http://www.antongerdelan.net/opengl/shaders.html
 // and https://www.opengl.org/wiki/Example_Code
@@ -48,7 +48,7 @@ bool compile(GLuint shader_index)
 
 }
 
-namespace lp
+namespace mh
 {
 
 Shader::~Shader(void)
@@ -93,4 +93,4 @@ bool Shader::link(void)
     return true;
 }
 
-} // namespace lp
+} // namespace mh

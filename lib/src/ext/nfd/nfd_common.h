@@ -10,7 +10,7 @@
 #ifndef _NFD_COMMON_H
 #define _NFD_COMMON_H
 
-#include "ext/nfd/nfd.h"
+#include "mh/ext/nfd/nfd.h"
 
 #ifdef __cplusplus
 extern "C" {

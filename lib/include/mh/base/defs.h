@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <iostream>
 
-namespace lp
+namespace mh
 {
 
 #ifdef DEBUG
@@ -14,7 +14,7 @@ namespace lp
 #endif
 
 #if (LP_DEBUG)
-#   define LP_ASSERT(X) ((void)(!(X) && lp::assertFailure(#X, __FILE__, __LINE__) && (HALT(), 1)))
+#   define LP_ASSERT(X) ((void)(!(X) && mh::assertFailure(#X, __FILE__, __LINE__) && (HALT(), 1)))
 #else
 #   define LP_ASSERT(X) ((void)(0))
 #endif
@@ -50,6 +50,8 @@ inline bool assertFailure(const char * msg, const char * file, int line)
 #define LP_DEFAULT_WIDGET_HEIGHT 300
 #define LP_DEFAULT_WIDGET_TITLE  "Untitled widget"
 
-} // namespace lp
+#define LP_DEFAULT_ZOOM_SPEED    10
+
+} // namespace mh
 
 #endif /* DEFS_H */

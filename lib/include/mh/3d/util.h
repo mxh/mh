@@ -5,7 +5,7 @@
 
 #include "eigen3/Eigen/Core"
 
-namespace lp
+namespace mh
 {
 
 template <class _VecType, class _TransformType>
@@ -13,7 +13,7 @@ std::vector<_VecType> applyTransform         (_TransformType T, const std::vecto
 
 float                 getFittingSphereRadius (const std::vector<Eigen::Vector3f> & points, Eigen::Vector3f center);
 
-} // namespace lp
+} // namespace mh
 
 #include "impl/util.hpp"
 

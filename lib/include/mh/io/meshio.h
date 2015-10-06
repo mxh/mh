@@ -8,13 +8,13 @@
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 
-#include "3d/mesh.h"
+#include "mh/3d/mesh.h"
 
-namespace lp
+namespace mh
 {
 
 Mesh                                convertFromAssimp (const aiMesh * inputMesh);
 std::vector<std::shared_ptr<Mesh> > loadMeshesFromOBJ (std::string path);
 
-} // namespace lp
+} // namespace mh
 #endif /* MESHIO_H */

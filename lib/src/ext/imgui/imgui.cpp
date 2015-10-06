@@ -472,9 +472,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "ext/imgui/imgui.h"
+#include "mh/ext/imgui/imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "ext/imgui/imgui_internal.h"
+#include "mh/ext/imgui/imgui_internal.h"
 
 #include <ctype.h>      // toupper, isprint
 #include <math.h>       // sqrtf, fabsf, fmodf, powf, cosf, sinf, floorf, ceilf
@@ -6754,7 +6754,7 @@ static bool STB_TEXTEDIT_INSERTCHARS(STB_TEXTEDIT_STRING* obj, int pos, const Im
 #define STB_TEXTEDIT_K_SHIFT        0x20000
 
 #define STB_TEXTEDIT_IMPLEMENTATION
-#include "ext/imgui/stb_textedit.h"
+#include "mh/ext/imgui/stb_textedit.h"
 
 }
 

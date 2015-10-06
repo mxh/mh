@@ -1,8 +1,8 @@
-#include "3d/scene.h"
+#include "mh/3d/scene.h"
 
-#include "3d/camera.h"
+#include "mh/3d/camera.h"
 
-namespace lp
+namespace mh
 {
 
 Scene::Scene(void) : m_dirty(true)
@@ -60,4 +60,4 @@ void Scene::draw(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)
     glUseProgram(0);
 }
 
-} // namespace lp
+} // namespace mh

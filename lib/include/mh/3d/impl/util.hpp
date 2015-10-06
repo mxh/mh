@@ -1,4 +1,4 @@
-namespace lp
+namespace mh
 {
 
 template <class _VecType, class _TransformType>
@@ -16,4 +16,4 @@ std::vector<_VecType> applyTransform(_TransformType T, const std::vector<_VecTyp
     return res;
 }
 
-}
+} // namespace mh

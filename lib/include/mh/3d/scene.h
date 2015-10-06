@@ -1,14 +1,14 @@
 #ifndef SCENE_H
 #define SCENE_H 
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
-#include "3d/mesh.h"
+#include "mh/3d/mesh.h"
 
-#include "gpu/shader.h"
+#include "mh/gpu/shader.h"
 
-namespace lp
+namespace mh
 {
 
 class Camera;
@@ -40,5 +40,5 @@ private:
 
 }; // class Scene
 
-} // namespace lp
+} // namespace mh
 #endif /* SCENE_H */

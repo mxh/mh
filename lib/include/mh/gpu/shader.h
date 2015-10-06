@@ -1,8 +1,8 @@
 #ifndef SHADER_H
 #define SHADER_H 
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
 #include <map>
 
@@ -27,7 +27,7 @@ void setUniform(const std::string & name, TYPE value) \
     glUniform1 ## EXT(location, value); \
 }
 
-namespace lp
+namespace mh
 {
 
 class Shader
@@ -61,6 +61,6 @@ private:
 
 }; // class Shader
 
-} // namespace lp
+} // namespace mh
 
 #endif /* SHADER_H */

@@ -1,6 +1,6 @@
-#include "3d/face.h"
+#include "mh/3d/face.h"
 
-namespace lp
+namespace mh
 {
 
 std::shared_ptr<const Vertex> Face::getVertex(size_t idx) const
@@ -77,4 +77,4 @@ Eigen::Vector3f Face::getFaceNormal(void) const
     return normal;
 }
 
-} // namespace lp
+} // namespace mh

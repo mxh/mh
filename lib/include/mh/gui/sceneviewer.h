@@ -1,13 +1,13 @@
 #ifndef SCENEVIEWER_H
 #define SCENEVIEWER_H 
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
-#include "3d/scene.h"
-#include "gui/viewer.h"
+#include "mh/3d/scene.h"
+#include "mh/gui/viewer.h"
 
-namespace lp
+namespace mh
 {
 
 class SceneViewer : public Viewer
@@ -25,6 +25,6 @@ private:
 
 }; // class SceneViewer
 
-} // namespace lp
+} // namespace mh
 
 #endif /* SCENEVIEWER_H */

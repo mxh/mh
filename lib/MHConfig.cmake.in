@@ -1,11 +1,13 @@
 # - Config file for the MH package
 # It defines the following variables
 #   MH_INCLUDE_DIRS - include directories for MH
+#   MH_LIBRARY_DIRS - library directories for MH
 #   MH_LIBRARIES    - libraries to link against
 
 # Compute paths
 GET_FILENAME_COMPONENT(MH_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 SET(MH_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
+SET(MH_LIBRARY_DIRS "@CONF_LIB_DIRS@")
 
 # Our library dependencies (contains definitions for IMPORTED targets)
 IF(NOT TARGET mh AND NOT MH_BINARY_DIR)
