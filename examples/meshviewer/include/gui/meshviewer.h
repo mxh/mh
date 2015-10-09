@@ -1,19 +1,19 @@
 #ifndef MESHVIEWER_H
 #define MESHVIEWER_H 
 
-#include "base/defs.h"
-#include "base/imports.h"
+#include "mh/base/defs.h"
+#include "mh/base/imports.h"
 
-#include "3d/camera.h"
-#include "gui/sceneviewer.h"
+#include "mh/3d/camera.h"
+#include "mh/gui/sceneviewer.h"
 
-namespace lp
+namespace mh 
 {
 
 class MeshViewer : public SceneViewer
 {
 public:
-    MeshViewer(int width=LP_DEFAULT_VIEWER_WIDTH, int height=LP_DEFAULT_VIEWER_HEIGHT)
+    MeshViewer(int width=MH_DEFAULT_VIEWER_WIDTH, int height=MH_DEFAULT_VIEWER_HEIGHT)
         : SceneViewer(width, height)
     { init(); }
 
@@ -28,6 +28,6 @@ private:
 
 }; // class MeshViewer
 
-} // namespace lp
+} // namespace mh
 
 #endif /* MESHVIEWER_H */

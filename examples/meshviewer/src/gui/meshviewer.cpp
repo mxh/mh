@@ -1,17 +1,17 @@
 #include "gui/meshviewer.h"
 
-#include "3d/camera.h"
+#include "mh/3d/camera.h"
 
-#include "gui/dialogs.h"
+#include "mh/gui/dialogs.h"
 
-#include "io/meshio.h"
+#include "mh/io/meshio.h"
 
-#include "gpu/shader.h"
+#include "mh/gpu/shader.h"
 
 namespace
 {
 
-using namespace lp;
+using namespace mh;
 
 std::shared_ptr<Shader> compileDefaultShader()
 {
@@ -66,7 +66,7 @@ std::shared_ptr<Shader> compileDefaultShader()
 
 }
 
-namespace lp
+namespace mh
 {
 
 int MeshViewer::init(void)

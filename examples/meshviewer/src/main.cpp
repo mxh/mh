@@ -1,6 +1,6 @@
 #include "gui/meshviewer.h"
 
-using namespace lp;
+using namespace mh;
 
 int main(int argc, char* argv[])
 {
