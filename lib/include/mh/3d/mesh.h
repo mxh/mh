@@ -39,24 +39,24 @@ public:
     friend void                                     swap      (Mesh & first, Mesh & second);
     Mesh &                                          operator= (      Mesh  other); // copy and swap
 
-    const std::vector<std::shared_ptr<Vertex> > &   getVertices()   const {                    return m_verts; }
-          std::vector<std::shared_ptr<Vertex> > &   getVertices()         { m_isInVBO = false; return m_verts; }
+    const std::vector<std::shared_ptr<Vertex> > &   getVertices()    const {                    return m_verts; }
+          std::vector<std::shared_ptr<Vertex> > &   getVertices()          { m_isInVBO = false; return m_verts; }
 
-    const std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()  const {                    return m_halfedges; }
-          std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()        { m_isInVBO = false; return m_halfedges; }
+    const std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()   const {                    return m_halfedges; }
+          std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()         { m_isInVBO = false; return m_halfedges; }
 
-    const std::vector<std::shared_ptr<Face> > &     getFaces()      const {                    return m_faces; }
-          std::vector<std::shared_ptr<Face> > &     getFaces()            { m_isInVBO = false; return m_faces; }
+    const std::vector<std::shared_ptr<Face> > &     getFaces()       const {                    return m_faces; }
+          std::vector<std::shared_ptr<Face> > &     getFaces()             { m_isInVBO = false; return m_faces; }
 
-    const std::vector<Eigen::Vector3f> &            getVertData()   const {                    return m_vertData; }
-    const std::vector<Eigen::Vector3f> &            getNormalData() const {                    return m_normalData; }
-    const std::vector<Eigen::Vector4f> &            getColorData()  const {                    return m_colorData; }
+    const std::vector<Eigen::Vector3f> &            getVertData()    const {                    return m_vertData; }
+    const std::vector<Eigen::Vector3f> &            getNormalData()  const {                    return m_normalData; }
+    const std::vector<Eigen::Vector4f> &            getColorData()   const {                    return m_colorData; }
 
     std::vector<Eigen::Vector3i>                    getFVI    (void) const;
     void                                            draw      (void);
     void                                            createVBO (void);
     void                                            deleteVBO (void);
-    void                                            checkVBO  (void) { if (!m_isInVBO) { deleteVBO(); createVBO(); } }
+    void                                            checkVBO  (void)       { if (!m_isInVBO) { deleteVBO(); createVBO(); } }
 
     size_t                                          nVerts    (void) const { return m_vertData.size(); }
     size_t                                          nFaces    (void) const { return m_faces.size(); }
@@ -83,7 +83,7 @@ private:
 
     // relative position
     Eigen::Vector3f                         m_position;
-    
+
     // bounding box
     Eigen::Vector3f                         m_min;
     Eigen::Vector3f                         m_max;

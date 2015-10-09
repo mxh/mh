@@ -41,7 +41,7 @@ std::vector<std::shared_ptr<Mesh> > loadMeshesFromOBJ(std::string path)
         aiProcess_JoinIdenticalVertices
     );
 
-    LP_ASSERT(scene);
+    MH_ASSERT(scene);
 
     meshes.reserve(scene->mNumMeshes);
     for (size_t i = 0; i < scene->mNumMeshes; ++i)

@@ -26,7 +26,7 @@ public:
     typedef std::map<std::string, std::shared_ptr<Shader> > ShaderMap;
     
     // constructors & destructors
-    Viewer(int width=LP_DEFAULT_VIEWER_WIDTH, int height=LP_DEFAULT_VIEWER_HEIGHT, const std::string & title=LP_DEFAULT_VIEWER_TITLE)
+    Viewer(int width=MH_DEFAULT_VIEWER_WIDTH, int height=MH_DEFAULT_VIEWER_HEIGHT, const std::string & title=MH_DEFAULT_VIEWER_TITLE)
       : m_width(width), m_height(height), m_title(title), m_shouldClose(false)
     { baseInit(); }
 

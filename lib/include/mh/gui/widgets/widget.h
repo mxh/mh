@@ -12,7 +12,7 @@ namespace mh
 class Widget
 {
 public:
-    Widget(int width=LP_DEFAULT_WIDGET_WIDTH, int height=LP_DEFAULT_WIDGET_HEIGHT, std::string title=LP_DEFAULT_WIDGET_TITLE)
+    Widget(int width=MH_DEFAULT_WIDGET_WIDTH, int height=MH_DEFAULT_WIDGET_HEIGHT, std::string title=MH_DEFAULT_WIDGET_TITLE)
         : m_enabled(false), m_width(width), m_height(height), m_title(title) {}
     virtual ~Widget() {}
 

@@ -105,7 +105,7 @@ void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f 
 
     if (io.MouseWheel != 0)
     {
-        camera.setFOV(camera.getFOV() + (io.MouseWheel * LP_DEFAULT_ZOOM_SPEED));
+        camera.setFOV(camera.getFOV() + (io.MouseWheel * MH_DEFAULT_ZOOM_SPEED));
     }
 
     if (!(io.MouseDown[0] || io.MouseDown[2]) || ImGui::IsMouseHoveringAnyWindow())

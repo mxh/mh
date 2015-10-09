@@ -8,15 +8,15 @@ namespace mh
 {
 
 #ifdef DEBUG
-#   define LP_DEBUG 1
+#   define MH_DEBUG 1
 #else
-#   define LP_DEBUG 0
+#   define MH_DEBUG 0
 #endif
 
-#if (LP_DEBUG)
-#   define LP_ASSERT(X) ((void)(!(X) && mh::assertFailure(#X, __FILE__, __LINE__) && (HALT(), 1)))
+#if (MH_DEBUG)
+#   define MH_ASSERT(X) ((void)(!(X) && mh::assertFailure(#X, __FILE__, __LINE__) && (HALT(), 1)))
 #else
-#   define LP_ASSERT(X) ((void)(0))
+#   define MH_ASSERT(X) ((void)(0))
 #endif
 
 #define HALT() exit(EXIT_FAILURE)
@@ -42,15 +42,15 @@ inline bool assertFailure(const char * msg, const char * file, int line)
     std::shared_ptr<TYPE> get##NAME(void) { return VARNAME; } \
     void set##NAME(std::shared_ptr<TYPE> val) { VARNAME = val; }
 
-#define LP_DEFAULT_VIEWER_WIDTH  1280
-#define LP_DEFAULT_VIEWER_HEIGHT 720
-#define LP_DEFAULT_VIEWER_TITLE  "Untitled viewer"
+#define MH_DEFAULT_VIEWER_WIDTH  1280
+#define MH_DEFAULT_VIEWER_HEIGHT 720
+#define MH_DEFAULT_VIEWER_TITLE  "Untitled viewer"
 
-#define LP_DEFAULT_WIDGET_WIDTH  300
-#define LP_DEFAULT_WIDGET_HEIGHT 300
-#define LP_DEFAULT_WIDGET_TITLE  "Untitled widget"
+#define MH_DEFAULT_WIDGET_WIDTH  300
+#define MH_DEFAULT_WIDGET_HEIGHT 300
+#define MH_DEFAULT_WIDGET_TITLE  "Untitled widget"
 
-#define LP_DEFAULT_ZOOM_SPEED    10
+#define MH_DEFAULT_ZOOM_SPEED    10
 
 } // namespace mh
 

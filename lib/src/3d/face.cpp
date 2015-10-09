@@ -5,7 +5,7 @@ namespace mh
 
 std::shared_ptr<const Vertex> Face::getVertex(size_t idx) const
 {
-    LP_ASSERT(idx < 3); // we deal only in triangles in these parts
+    MH_ASSERT(idx < 3); // we deal only in triangles in these parts
 
     switch (idx)
     {
@@ -25,7 +25,7 @@ std::shared_ptr<const Vertex> Face::getVertex(size_t idx) const
 
 std::shared_ptr<Vertex> Face::getVertex(size_t idx)
 {
-    LP_ASSERT(idx < 3); // we deal only in triangles in these parts
+    MH_ASSERT(idx < 3); // we deal only in triangles in these parts
 
     switch (idx)
     {
@@ -45,7 +45,7 @@ std::shared_ptr<Vertex> Face::getVertex(size_t idx)
 
 Eigen::Vector3f Face::getEdge(size_t idx) const
 {
-    LP_ASSERT(idx < 3); // we deal only in triangles in these parts
+    MH_ASSERT(idx < 3); // we deal only in triangles in these parts
 
     switch (idx)
     {

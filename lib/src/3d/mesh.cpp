@@ -3,7 +3,7 @@
 
 #include "mh/3d/mesh.h"
 
-#define LP_GEN_ARRAY_BUF(ID, TYPE, SIZE, START, GLTYPE, WIDTH, LOC) \
+#define MH_GEN_ARRAY_BUF(ID, TYPE, SIZE, START, GLTYPE, WIDTH, LOC) \
     glGenBuffers(1, &ID); \
     glBindBuffer(GL_ARRAY_BUFFER, ID); \
     glBufferData(GL_ARRAY_BUFFER, sizeof(TYPE) * SIZE, START, GL_STATIC_DRAW); \
@@ -11,7 +11,7 @@
     glEnableVertexAttribArray(LOC);\
     glVertexAttribPointer(LOC, WIDTH, GLTYPE, 0, 0, 0)
 
-#define LP_GEN_ELEM_ARRAY_BUF(ID, TYPE, SIZE, START) \
+#define MH_GEN_ELEM_ARRAY_BUF(ID, TYPE, SIZE, START) \
     glGenBuffers(1, &ID); \
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID); \
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(TYPE) * SIZE, START, GL_STATIC_DRAW)
@@ -24,7 +24,7 @@ Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
            const std::vector<Eigen::Vector3i> & faceData)
 : m_vertData(vertData), m_normalData(normalData), m_position(Eigen::Vector3f::Zero())
 {
-    LP_ASSERT(m_vertData.size() == m_normalData.size());
+    MH_ASSERT(m_vertData.size() == m_normalData.size());
 
     // set default mesh color
     m_colorData.resize(nVerts(), Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1.0f));
@@ -201,16 +201,16 @@ void Mesh::createVBO(void)
     glBindVertexArray(m_vaoID);
 
     // array buffers
-    LP_GEN_ARRAY_BUF(m_posVboID,    Eigen::Vector3f, nVerts(), &m_vertData[0](0),   GL_FLOAT, 3, POSITION_LOCATION);
-    LP_GEN_ARRAY_BUF(m_normalVboID, Eigen::Vector3f, nVerts(), &m_normalData[0](0), GL_FLOAT, 3, NORMAL_LOCATION);
-    LP_GEN_ARRAY_BUF(m_colorVboID,  Eigen::Vector4f, nVerts(), &m_colorData[0](0),  GL_FLOAT, 4, COLOR_LOCATION);
+    MH_GEN_ARRAY_BUF(m_posVboID,    Eigen::Vector3f, nVerts(), &m_vertData[0](0),   GL_FLOAT, 3, POSITION_LOCATION);
+    MH_GEN_ARRAY_BUF(m_normalVboID, Eigen::Vector3f, nVerts(), &m_normalData[0](0), GL_FLOAT, 3, NORMAL_LOCATION);
+    MH_GEN_ARRAY_BUF(m_colorVboID,  Eigen::Vector4f, nVerts(), &m_colorData[0](0),  GL_FLOAT, 4, COLOR_LOCATION);
 
     m_min = Eigen::Map<Eigen::Matrix<float, -1, 3, Eigen::RowMajor> >(&m_vertData[0](0), nVerts(), 3).colwise().minCoeff();
     m_max = Eigen::Map<Eigen::Matrix<float, -1, 3, Eigen::RowMajor> >(&m_vertData[0](0), nVerts(), 3).colwise().maxCoeff();
 
     // element array buffers
     std::vector<Eigen::Vector3i> fvi = getFVI();
-    LP_GEN_ELEM_ARRAY_BUF(m_indexVboID, Eigen::Vector3i, nFaces(), &fvi[0](0));
+    MH_GEN_ELEM_ARRAY_BUF(m_indexVboID, Eigen::Vector3i, nFaces(), &fvi[0](0));
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
