@@ -5,6 +5,8 @@
 #include "mh/base/imports.h"
 
 #include "mh/3d/halfedge.h"
+#include "mh/3d/intersection.h"
+#include "mh/3d/ray.h"
 #include "mh/3d/vertex.h"
 
 namespace mh
@@ -25,6 +27,8 @@ public:
     std::shared_ptr<Vertex>       getVertex     (size_t idx);
     Eigen::Vector3f               getEdge       (size_t idx) const;
     Eigen::Vector3f               getFaceNormal (void)       const;
+
+    Intersection<Face>            intersect     (const Ray & ray, bool backfacing=false);
 
 protected:
 

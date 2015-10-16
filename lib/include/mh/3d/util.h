@@ -8,8 +8,8 @@
 namespace mh
 {
 
-template <class _VecType, class _TransformType>
-std::vector<_VecType> applyTransform         (_TransformType T, const std::vector<_VecType> & data);
+template <class TVecType, class TTransformType>
+std::vector<TVecType> applyTransform         (TTransformType T, const std::vector<TVecType> & data);
 
 float                 getFittingSphereRadius (const std::vector<Eigen::Vector3f> & points, Eigen::Vector3f center);
 

@@ -1,5 +1,7 @@
 #include <algorithm>
 
+#include "eigen3/Eigen/Geometry"
+
 #include "mh/3d/camera.h"
 #include "mh/3d/mesh.h"
 #include "mh/3d/util.h"

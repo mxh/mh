@@ -1,15 +1,15 @@
 namespace mh
 {
 
-template <class _VecType, class _TransformType>
-std::vector<_VecType> applyTransform(_TransformType T, const std::vector<_VecType> & data)
+template <class TVecType, class TTransformType>
+std::vector<TVecType> applyTransform(TTransformType T, const std::vector<TVecType> & data)
 {
-    std::vector<_VecType> res;
+    std::vector<TVecType> res;
     res.resize(data.size());
 
     for (size_t i = 0; i < data.size(); ++i)
     {
-        _VecType transformed = T * data[i];
+        TVecType transformed = T * data[i];
         res[i] = transformed;
     }
 

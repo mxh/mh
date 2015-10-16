@@ -22,8 +22,76 @@ namespace mh
 Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
            const std::vector<Eigen::Vector3f> & normalData,
            const std::vector<Eigen::Vector3i> & faceData)
-: m_vertData(vertData), m_normalData(normalData), m_position(Eigen::Vector3f::Zero())
+: m_vertData   (vertData),
+  m_normalData (normalData),
+  m_faceData   (faceData),
+  m_position   (Eigen::Vector3f::Zero()),
+  m_VBOCreated (false),
+  m_dirty      (true)
 {
+    init();
+}
+
+Mesh::Mesh(const Mesh & other)
+    : m_vertData   (other.m_vertData),
+      m_normalData (other.m_normalData),
+      m_colorData  (other.m_colorData),
+      m_faceData   (other.m_faceData),
+      m_position   (other.m_position),
+      m_min        (other.m_min),
+      m_max        (other.m_max),
+      m_VBOCreated (false),
+      m_dirty      (true)
+{
+    init();
+}
+
+void swap(Mesh & first, Mesh & second)
+{
+    using std::swap;
+
+    swap(first.m_vertData,    second.m_vertData);
+    swap(first.m_faceData,    second.m_faceData);
+    swap(first.m_normalData,  second.m_normalData);
+    swap(first.m_colorData,   second.m_colorData);
+
+    swap(first.m_verts,       second.m_verts);
+    swap(first.m_halfedges,   second.m_halfedges);
+    swap(first.m_faces,       second.m_faces);
+
+    swap(first.m_position,    second.m_position);
+
+    swap(first.m_min,         second.m_min);
+    swap(first.m_max,         second.m_max);
+
+    swap(first.m_bvh,         second.m_bvh);
+
+    swap(first.m_dirty,       second.m_dirty);
+
+    swap(first.m_vaoID,       second.m_vaoID);
+    swap(first.m_indexVboID,  second.m_indexVboID);
+    swap(first.m_posVboID,    second.m_posVboID);
+    swap(first.m_normalVboID, second.m_normalVboID);
+    swap(first.m_colorVboID,  second.m_colorVboID);
+}
+
+Mesh & Mesh::operator=(Mesh other)
+{
+    swap(*this, other);
+
+    return *this;
+}
+
+void Mesh::init()
+{
+    // set GL vars
+    m_vaoID       = 0;
+    m_indexVboID  = 0;
+    m_posVboID    = 0;
+    m_normalVboID = 0;
+    m_colorVboID  = 0;
+
+    // construct half-edge structure
     MH_ASSERT(m_vertData.size() == m_normalData.size());
 
     // set default mesh color
@@ -39,9 +107,9 @@ Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
     }
 
     // create Faces and HalfEdges
-    m_faces.reserve(faceData.size());
-    m_halfedges.reserve(3 * faceData.size());
-    for (size_t i = 0; i < faceData.size(); ++i)
+    m_faces.reserve(m_faceData.size());
+    m_halfedges.reserve(3 * m_faceData.size());
+    for (size_t i = 0; i < m_faceData.size(); ++i)
     {
         auto face = std::make_shared<Face>(i);
         m_faces.push_back(face);
@@ -50,9 +118,9 @@ Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
         auto he_2 = std::make_shared<HalfEdge>();
         auto he_3 = std::make_shared<HalfEdge>();
 
-        he_1->setVertex(m_verts[faceData[i][0]]);
-        he_2->setVertex(m_verts[faceData[i][1]]);
-        he_3->setVertex(m_verts[faceData[i][2]]);
+        he_1->setVertex(m_verts[m_faceData[i][0]]);
+        he_2->setVertex(m_verts[m_faceData[i][1]]);
+        he_3->setVertex(m_verts[m_faceData[i][2]]);
 
         he_1->setFace(face);
         he_2->setFace(face);
@@ -62,9 +130,9 @@ Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
         he_2->setNext(he_3);
         he_3->setNext(he_1);
 
-        m_verts[faceData[i][2]]->setHalfEdge(he_1);
-        m_verts[faceData[i][0]]->setHalfEdge(he_2);
-        m_verts[faceData[i][1]]->setHalfEdge(he_3);
+        m_verts[m_faceData[i][2]]->setHalfEdge(he_1);
+        m_verts[m_faceData[i][0]]->setHalfEdge(he_2);
+        m_verts[m_faceData[i][1]]->setHalfEdge(he_3);
 
         face->setHalfEdge(he_1);
 
@@ -97,78 +165,6 @@ Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
         }
     }
 
-    m_isInVBO = false;
-
-}
-
-Mesh::Mesh(const Mesh & other)
-    : m_vertData   (other.m_vertData),
-      m_normalData (other.m_normalData),
-      m_colorData  (other.m_colorData),
-      m_position   (other.m_position),
-      m_min        (other.m_min),
-      m_max        (other.m_max),
-      m_isInVBO    (false)
-{
-    m_verts.reserve(other.m_verts.size());
-    m_halfedges.reserve(other.m_halfedges.size());
-    m_faces.reserve(other.m_faces.size());
-
-    for (size_t i = 0; i < other.m_verts.size(); ++i)
-    {
-        m_verts.push_back(std::make_shared<Vertex>(*other.m_verts[i]));
-    }
-    for (size_t i = 0; i < other.m_halfedges.size(); ++i)
-    {
-        m_halfedges.push_back(std::make_shared<HalfEdge>(*other.m_halfedges[i]));
-    }
-    for (size_t i = 0; i < other.m_faces.size(); ++i)
-    {
-        m_faces.push_back(std::make_shared<Face>(*other.m_faces[i]));
-    }
-
-}
-
-void swap(Mesh & first, Mesh & second)
-{
-    using std::swap;
-
-    swap(first.m_vertData,    second.m_vertData);
-    swap(first.m_normalData,  second.m_normalData);
-    swap(first.m_colorData,   second.m_colorData);
-
-    swap(first.m_verts,       second.m_verts);
-    swap(first.m_halfedges,   second.m_halfedges);
-    swap(first.m_faces,       second.m_faces);
-
-    swap(first.m_position,    second.m_position);
-
-    swap(first.m_min,         second.m_min);
-    swap(first.m_max,         second.m_max);
-
-    swap(first.m_isInVBO,     second.m_isInVBO);
-
-    swap(first.m_vaoID,       second.m_vaoID);
-    swap(first.m_indexVboID,  second.m_indexVboID);
-    swap(first.m_posVboID,    second.m_posVboID);
-    swap(first.m_normalVboID, second.m_normalVboID);
-    swap(first.m_colorVboID,  second.m_colorVboID);
-}
-
-Mesh & Mesh::operator=(Mesh other)
-{
-    swap(*this, other);
-
-    return *this;
-}
-
-void Mesh::init()
-{
-    m_vaoID       = 0;
-    m_indexVboID  = 0;
-    m_posVboID    = 0;
-    m_normalVboID = 0;
-    m_colorVboID  = 0;
 }
 
 std::vector<Eigen::Vector3i> Mesh::getFVI() const
@@ -188,7 +184,7 @@ std::vector<Eigen::Vector3i> Mesh::getFVI() const
 
 void Mesh::draw(void)
 {
-    checkVBO();
+    update();
 
     glBindVertexArray(m_vaoID);
     glDrawElements(GL_TRIANGLES, 3 * nFaces(), GL_UNSIGNED_INT, 0);
@@ -216,8 +212,6 @@ void Mesh::createVBO(void)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    m_isInVBO = true;
-
 }
 
 void Mesh::deleteVBO(void)
@@ -229,9 +223,24 @@ void Mesh::deleteVBO(void)
     glDeleteBuffers     (1, &m_colorVboID);
 }
 
+void Mesh::update(void)
+{
+    if (m_dirty)
+    {
+        if (m_VBOCreated)
+        {
+            deleteVBO();
+        }
+        createVBO();
+        m_bvh = constructBVHFromMesh(this);
+
+        m_dirty = false;
+    }
+}
+
 Eigen::Vector3f Mesh::getCenter(void)
 {
-    checkVBO();
+    update();
     return getModelToWorld() * ((m_min + m_max) / 2.0f);
 }
 
@@ -239,5 +248,20 @@ Eigen::Affine3f Mesh::getModelToWorld(void) const
 {
     return static_cast<Eigen::Affine3f>(Eigen::Translation3f(m_position));
 }
+
+std::shared_ptr<BVH> constructBVHFromMesh(Mesh * mesh)
+{
+    std::vector<std::shared_ptr<BVH> > faceBVHs;
+
+    for (size_t i = 0; i < mesh->getFaces().size(); ++i)
+    {
+        faceBVHs.push_back(constructBVHFromFace(mesh->getFaces()[i]));
+    }
+
+    auto bvh = constructBVHFromSet(faceBVHs, BVH::X);
+
+    return bvh;
+}
+
 
 } // namespace mh

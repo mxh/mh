@@ -52,6 +52,8 @@ inline bool assertFailure(const char * msg, const char * file, int line)
 
 #define MH_DEFAULT_ZOOM_SPEED    10
 
+#define MH_EPSILON               1e-5
+
 } // namespace mh
 
 #endif /* DEFS_H */
