@@ -31,22 +31,15 @@ void Scene::addMeshes(const std::vector<std::shared_ptr<Mesh> > & meshes)
 
 Eigen::Vector3f Scene::getCenter(void)
 {
-    if (m_dirty)
-    {
-        m_center = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
-        for (size_t i = 0; i < m_meshes.size(); ++i)
-        {
-            m_center += m_meshes[i]->getCenter();
-        }
-        m_center /= m_meshes.size();
-        m_dirty = false;
-    }
+    update();
 
     return m_center;
 }
 
 void Scene::draw(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)
 {
+    update();
+
     shader->use();
     shader->setUniform("worldToCamera", camera->getWorldToCamera());
     shader->setUniform("cameraToClip",  camera->getCameraToClip());
@@ -58,6 +51,36 @@ void Scene::draw(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)
     }
 
     glUseProgram(0);
+}
+
+void Scene::update(void)
+{
+    if (m_dirty)
+    {
+        std::vector<std::shared_ptr<BVH> > meshBVHs;
+        m_center = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+
+        for (size_t i = 0; i < m_meshes.size(); ++i)
+        {
+            m_center += m_meshes[i]->getCenter();
+
+            meshBVHs.push_back(m_meshes[i]->getBVH());
+        }
+        m_center /= m_meshes.size();
+
+        m_dirty = false;
+
+        m_bvh = constructBVHFromSet(meshBVHs, BVH::X);
+    }
+}
+
+void Scene::reset(void)
+{
+    m_meshes.clear();
+
+    m_bvh    = nullptr;
+    m_center = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+    m_dirty  = true;
 }
 
 } // namespace mh

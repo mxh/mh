@@ -55,7 +55,7 @@ Intersection<BVH> BVH::aabbIntersect(const Ray & ray)
     return Intersection<BVH>();
 }
 
-Intersection<Face> BVH::intersect(const Ray & ray, bool backfacing)
+Intersection<Face> BVH::intersect(const Ray & ray, bool backfacing, int depth)
 {
     if (isLeaf())
     {
@@ -70,12 +70,12 @@ Intersection<Face> BVH::intersect(const Ray & ray, bool backfacing)
 
     if (leftAABBIntersection)
     {
-        leftIntersection = m_left->intersect(ray, backfacing);
+        leftIntersection = m_left->intersect(ray, backfacing, depth + 1);
     }
 
     if (rightAABBIntersection)
     {
-        rightIntersection = m_right->intersect(ray, backfacing);
+        rightIntersection = m_right->intersect(ray, backfacing, depth + 1);
     }
 
     if (leftIntersection && rightIntersection)
@@ -118,6 +118,11 @@ std::shared_ptr<BVH> constructBVHFromFace(std::shared_ptr<Face> face)
 
 std::shared_ptr<BVH> constructBVHFromSet(std::vector<std::shared_ptr<BVH> > bvhs, int axis)
 {
+    if (bvhs.size() == 0)
+    {
+        return nullptr;
+    }
+
     if (bvhs.size() == 1)
     {
         return bvhs[0];

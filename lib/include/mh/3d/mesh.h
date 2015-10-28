@@ -114,6 +114,7 @@ private:
 }; // class Mesh
 
 std::shared_ptr<BVH> constructBVHFromMesh(Mesh * mesh);
+std::shared_ptr<BVH> constructBVHFromMeshes(std::vector<std::shared_ptr<Mesh> > & meshes);
 
 } // namespace mh
 

@@ -34,7 +34,7 @@ public:
     bool                  isLeaf        (void)                       { return !(m_left || m_right); }
 
     Intersection<BVH>     aabbIntersect (const Ray & ray);
-    Intersection<Face>    intersect     (const Ray & ray, bool backfacing=false);
+    Intersection<Face>    intersect     (const Ray & ray, bool backfacing=false, int depth=0);
     
 protected:
 

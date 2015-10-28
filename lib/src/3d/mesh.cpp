@@ -263,5 +263,22 @@ std::shared_ptr<BVH> constructBVHFromMesh(Mesh * mesh)
     return bvh;
 }
 
+std::shared_ptr<BVH> constructBVHFromMeshes(std::vector<std::shared_ptr<Mesh> > & meshes)
+{
+    std::vector<std::shared_ptr<BVH> > faceBVHs;
+
+    for (size_t i = 0; i < meshes.size(); ++i)
+    {
+        for (size_t j = 0; j < meshes[i]->getFaces().size(); ++j)
+        {
+            faceBVHs.push_back(constructBVHFromFace(meshes[i]->getFaces()[j]));
+        }
+    }
+
+    auto bvh = constructBVHFromSet(faceBVHs, BVH::X);
+
+    return bvh;
+}
+
 
 } // namespace mh
