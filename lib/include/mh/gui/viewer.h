@@ -59,6 +59,11 @@ public:
     void         addShader     (std::string name, std::shared_ptr<Shader> shader)
     { m_shaders.insert(std::pair<std::string, std::shared_ptr<Shader> >(name, shader)); }
 
+    int          getWidth      (void)             const
+    { return m_width; }
+    int          getHeight     (void)             const
+    { return m_height; }
+
 protected:
     void         pollSize();
 

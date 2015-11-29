@@ -61,7 +61,7 @@ public:
     void                                            draw            (void);
     void                                            createVBO       (void);
     void                                            deleteVBO       (void);
-    void                                            update          (void);
+    void                                            update          (bool force=false);
 
     size_t                                          nVerts          (void) const { return m_vertData.size(); }
     size_t                                          nFaces          (void) const { return m_faces.size(); }
@@ -69,6 +69,9 @@ public:
     Eigen::Vector3f                                 getMin          (void) const { return m_min; }
     Eigen::Vector3f                                 getMax          (void) const { return m_max; }
     Eigen::Vector3f                                 getCenter       (void);
+
+    Eigen::Vector3f                                 getPosition     (void) const;
+    void                                            setPosition     (Eigen::Vector3f position) { m_position = position; }
 
     Eigen::Affine3f                                 getModelToWorld (void) const;
 

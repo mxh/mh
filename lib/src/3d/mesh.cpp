@@ -223,9 +223,9 @@ void Mesh::deleteVBO(void)
     glDeleteBuffers     (1, &m_colorVboID);
 }
 
-void Mesh::update(void)
+void Mesh::update(bool force)
 {
-    if (m_dirty)
+    if (m_dirty || force)
     {
         if (m_VBOCreated)
         {

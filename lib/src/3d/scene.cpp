@@ -31,9 +31,39 @@ void Scene::addMeshes(const std::vector<std::shared_ptr<Mesh> > & meshes)
 
 Eigen::Vector3f Scene::getCenter(void)
 {
-    update();
-
     return m_center;
+}
+
+Eigen::Vector3f Scene::getMin(void) const
+{
+    Eigen::Vector3f min(0.0f, 0.0f, 0.0f);
+    if (m_meshes.size())
+    {
+        min = m_meshes[0]->getMin();
+
+        for (size_t i = 1; i < m_meshes.size(); ++i)
+        {
+            min = min.array().min(m_meshes[i]->getMin().array()).matrix();
+        }
+    }
+
+    return min;
+}
+
+Eigen::Vector3f Scene::getMax(void) const
+{
+    Eigen::Vector3f max(0.0f, 0.0f, 0.0f);
+    if (m_meshes.size())
+    {
+        max = m_meshes[0]->getMax();
+
+        for (size_t i = 1; i < m_meshes.size(); ++i)
+        {
+            max = max.array().max(m_meshes[i]->getMax().array()).matrix();
+        }
+    }
+
+    return max;
 }
 
 void Scene::draw(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)
@@ -53,25 +83,37 @@ void Scene::draw(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)
     glUseProgram(0);
 }
 
-void Scene::update(void)
+void Scene::update(bool force)
 {
-    if (m_dirty)
+    if (m_dirty || force)
     {
         std::vector<std::shared_ptr<BVH> > meshBVHs;
-        m_center = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+        //m_center = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
 
         for (size_t i = 0; i < m_meshes.size(); ++i)
         {
-            m_center += m_meshes[i]->getCenter();
+        //    m_center += m_meshes[i]->getCenter();
 
             meshBVHs.push_back(m_meshes[i]->getBVH());
         }
-        m_center /= m_meshes.size();
+        //m_center /= m_meshes.size();
 
         m_dirty = false;
 
         m_bvh = constructBVHFromSet(meshBVHs, BVH::X);
     }
+}
+
+void Scene::centerToCenterOfMass(void)
+{
+    m_center = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+
+    for (size_t i = 0; i < m_meshes.size(); ++i)
+    {
+        m_center += m_meshes[i]->getCenter();
+    }
+
+    m_center /= m_meshes.size();
 }
 
 void Scene::reset(void)

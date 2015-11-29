@@ -61,5 +61,11 @@ private:
 void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f center);
 void setCameraLookatScene(Camera & camera, Scene & scene);
 
+void cameraRotate(Camera & camera, Eigen::Vector3f center, Eigen::Vector3f axis, float angle);
+void cameraYaw   (Camera & camera, Eigen::Vector3f center, float angle);
+void cameraPitch (Camera & camera, Eigen::Vector3f center, float angle);
+void cameraRoll  (Camera & camera, Eigen::Vector3f center, float angle);
+
+
 } // namespace mh
 #endif /* CAMERA_H */

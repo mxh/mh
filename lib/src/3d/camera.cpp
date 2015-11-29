@@ -160,4 +160,29 @@ void setCameraLookatScene(Camera & camera, Scene & scene)
     camera.setFar(dist + r);
 }
 
+void cameraRotate(Camera & camera, Eigen::Vector3f center, Eigen::Vector3f axis, float angle)
+{
+    Eigen::Quaternionf rotation;
+    rotation = Eigen::AngleAxisf(angle, axis);
+    Eigen::Vector3f newCameraPos = Eigen::Translation3f(center) * rotation * Eigen::Translation3f(-center) * camera.getPosition();
+    camera.setForward(rotation * camera.getForward());
+    camera.setUp(camera.getForward().cross(camera.getUp()).normalized().cross(camera.getForward()).normalized());
+    camera.setPosition(newCameraPos);
+}
+
+void cameraYaw(Camera & camera, Eigen::Vector3f center, float angle)
+{
+    cameraRotate(camera, center, camera.getUp(), angle);
+}
+
+void cameraPitch(Camera & camera, Eigen::Vector3f center, float angle)
+{
+    cameraRotate(camera, center, camera.getForward().cross(camera.getUp()).normalized(), angle);
+}
+
+void cameraRoll(Camera & camera, Eigen::Vector3f center, float angle)
+{
+    cameraRotate(camera, center, camera.getForward(), angle);
+}
+
 } // namespace mh

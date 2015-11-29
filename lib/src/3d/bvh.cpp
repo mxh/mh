@@ -55,27 +55,36 @@ Intersection<BVH> BVH::aabbIntersect(const Ray & ray)
     return Intersection<BVH>();
 }
 
-Intersection<Face> BVH::intersect(const Ray & ray, bool backfacing, int depth)
+Intersection<Face> BVH::intersect(const Ray & ray, bool backfacing, int depth, Eigen::Vector3f * offset)
 {
+    Ray offsetRay;
+    if (offset)
+    {
+        offsetRay.setPosition(ray.getPosition() + *offset);
+    } else {
+        offsetRay.setPosition(ray.getPosition());
+    }
+    offsetRay.setDirection(ray.getDirection());
+
     if (isLeaf())
     {
-        return m_face->intersect(ray, backfacing);
+        return m_face->intersect(offsetRay, backfacing);
     }
 
-    Intersection<BVH> leftAABBIntersection = m_left->aabbIntersect(ray);
-    Intersection<BVH> rightAABBIntersection = m_right->aabbIntersect(ray);
+    Intersection<BVH> leftAABBIntersection = m_left->aabbIntersect(offsetRay);
+    Intersection<BVH> rightAABBIntersection = m_right->aabbIntersect(offsetRay);
 
     Intersection<Face> leftIntersection;
     Intersection<Face> rightIntersection;
 
     if (leftAABBIntersection)
     {
-        leftIntersection = m_left->intersect(ray, backfacing, depth + 1);
+        leftIntersection = m_left->intersect(offsetRay, backfacing, depth + 1);
     }
 
     if (rightAABBIntersection)
     {
-        rightIntersection = m_right->intersect(ray, backfacing, depth + 1);
+        rightIntersection = m_right->intersect(offsetRay, backfacing, depth + 1);
     }
 
     if (leftIntersection && rightIntersection)
