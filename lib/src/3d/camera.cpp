@@ -156,8 +156,8 @@ void setCameraLookatScene(Camera & camera, Scene & scene)
     float dist = r / std::sin(0.5 * camera.getFOV() * M_PI / 180);
 
     camera.setPosition(center - camera.getForward() * dist);
-    camera.setNear(dist - r);
-    camera.setFar(dist + r);
+    camera.setNear(dist - 2*r);
+    camera.setFar(dist + 2*r);
 }
 
 void cameraRotate(Camera & camera, Eigen::Vector3f center, Eigen::Vector3f axis, float angle)
