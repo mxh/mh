@@ -55,5 +55,7 @@ private:
 
 }; // class Scene
 
+float getSceneBoundingSphereRadius(Scene & scene);
+
 } // namespace mh
 #endif /* SCENE_H */

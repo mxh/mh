@@ -1,6 +1,7 @@
 #include "mh/3d/scene.h"
 
 #include "mh/3d/camera.h"
+#include "mh/3d/util.h"
 
 namespace mh
 {
@@ -123,6 +124,22 @@ void Scene::reset(void)
     m_bvh    = nullptr;
     m_center = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
     m_dirty  = true;
+}
+
+float getSceneBoundingSphereRadius(Scene & scene)
+{
+    Eigen::Vector3f center = scene.getCenter();
+
+    std::vector<float> radii;
+    radii.resize(scene.getMeshes().size());
+    std::transform(scene.getMeshes().begin(), scene.getMeshes().end(), radii.begin(),
+        [&center] (const std::shared_ptr<Mesh> & x)
+        {
+            return getFittingSphereRadius(applyTransform(x->getModelToWorld(), x->getVertData()), center);
+        }
+    );
+    
+    return *std::max_element(radii.begin(), radii.end());
 }
 
 } // namespace mh
