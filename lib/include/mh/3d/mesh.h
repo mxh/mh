@@ -24,6 +24,7 @@ public:
     static constexpr int POSITION_LOCATION = 0;
     static constexpr int NORMAL_LOCATION   = 1;
     static constexpr int COLOR_LOCATION    = 2;
+    static constexpr int TEXTURE_LOCATION  = 3;
 
 public:
                                                     //Mesh      (void) : m_idx(-1), m_position(Eigen::Vector3f::Zero()), m_VBOCreated(false), m_dirty(false) {}
@@ -35,27 +36,35 @@ public:
                                                                const std::vector<Eigen::Vector3f> & normalData,
                                                                const std::vector<Eigen::Vector4f> & colorData,
                                                                const std::vector<Eigen::Vector3i> & faceData);
+                                                    Mesh      (const std::vector<Eigen::Vector3f> & vertData,
+                                                               const std::vector<Eigen::Vector3f> & normalData,
+                                                               const std::vector<Eigen::Vector2f> & textureCoordsData,
+                                                               const std::vector<Eigen::Vector3i> & faceData);
                                                     Mesh      (const Mesh& other);
 
     friend void                                     swap      (Mesh & first, Mesh & second);
     Mesh &                                          operator= (      Mesh  other); // copy and swap
 
-    const std::vector<std::shared_ptr<Vertex> > &   getVertices()    const {                    return m_verts; }
-          std::vector<std::shared_ptr<Vertex> > &   getVertices()          { m_dirty = true; return m_verts; }
+    const std::vector<std::shared_ptr<Vertex> > &   getVertices()          const {                    return m_verts; }
+          std::vector<std::shared_ptr<Vertex> > &   getVertices()                { m_dirty = true;    return m_verts; }
 
-    const std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()   const {                    return m_halfedges; }
-          std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()         { m_dirty = true; return m_halfedges; }
+    const std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()         const {                    return m_halfedges; }
+          std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()               { m_dirty = true;    return m_halfedges; }
 
-    const std::vector<std::shared_ptr<Face> > &     getFaces()       const {                    return m_faces; }
-          std::vector<std::shared_ptr<Face> > &     getFaces()             { m_dirty = true; return m_faces; }
+    const std::vector<std::shared_ptr<Face> > &     getFaces()             const {                    return m_faces; }
+          std::vector<std::shared_ptr<Face> > &     getFaces()                   { m_dirty = true;    return m_faces; }
 
-    const std::vector<Eigen::Vector3f> &            getVertData()    const {                    return m_vertData; }
-    const std::vector<Eigen::Vector3f> &            getNormalData()  const {                    return m_normalData; }
-    const std::vector<Eigen::Vector4f> &            getColorData()   const {                    return m_colorData; }
+    const std::vector<Eigen::Vector3f> &            getVertData()          const {                    return m_vertData; }
+    const std::vector<Eigen::Vector3f> &            getNormalData()        const {                    return m_normalData; }
+    const std::vector<Eigen::Vector4f> &            getColorData()         const {                    return m_colorData; }
+    const std::vector<Eigen::Vector2f> &            getTextureCoordsData() const {                    return m_textureCoordsData; }
 
-    std::shared_ptr<BVH>                            getBVH()               { update();          return m_bvh; }
+    std::shared_ptr<BVH>                            getBVH()                     { update();          return m_bvh; }
 
     std::size_t                                     idx             (void) const { return m_idx; }
+
+    bool                                            getHasTexture   (void) const { return m_hasTexture; }
+    void                                            setHasTexture   (bool hasTexture) { m_hasTexture = hasTexture; }
 
     std::vector<Eigen::Vector3i>                    getFVI          (void) const;
     void                                            draw            (void);
@@ -86,6 +95,7 @@ private:
     std::vector<Eigen::Vector3f>            m_vertData;
     std::vector<Eigen::Vector3f>            m_normalData;
     std::vector<Eigen::Vector4f>            m_colorData;
+    std::vector<Eigen::Vector2f>            m_textureCoordsData;
     std::vector<Eigen::Vector3i>            m_faceData;
 
     // structures
@@ -105,6 +115,7 @@ private:
 
     // state
     bool                                    m_VBOCreated;
+    bool                                    m_hasTexture;
     bool                                    m_dirty;
 
     // GL
@@ -113,6 +124,7 @@ private:
     GLuint                                  m_posVboID;
     GLuint                                  m_normalVboID;
     GLuint                                  m_colorVboID;
+    GLuint                                  m_textureVboID;
 
 }; // class Mesh
 

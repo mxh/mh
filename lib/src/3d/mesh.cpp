@@ -27,7 +27,24 @@ Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
   m_faceData   (faceData),
   m_position   (Eigen::Vector3f::Zero()),
   m_VBOCreated (false),
+  m_hasTexture (false),
   m_dirty      (true)
+{
+    init();
+}
+
+Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
+           const std::vector<Eigen::Vector3f> & normalData,
+           const std::vector<Eigen::Vector2f> & textureCoordsData,
+           const std::vector<Eigen::Vector3i> & faceData)
+: m_vertData          (vertData),
+  m_normalData        (normalData),
+  m_textureCoordsData (textureCoordsData),
+  m_faceData          (faceData),
+  m_position          (Eigen::Vector3f::Zero()),
+  m_VBOCreated        (false),
+  m_hasTexture        (true),
+  m_dirty             (true)
 {
     init();
 }
@@ -85,11 +102,12 @@ Mesh & Mesh::operator=(Mesh other)
 void Mesh::init()
 {
     // set GL vars
-    m_vaoID       = 0;
-    m_indexVboID  = 0;
-    m_posVboID    = 0;
-    m_normalVboID = 0;
-    m_colorVboID  = 0;
+    m_vaoID        = 0;
+    m_indexVboID   = 0;
+    m_posVboID     = 0;
+    m_normalVboID  = 0;
+    m_colorVboID   = 0;
+    m_textureVboID = 0;
 
     // construct half-edge structure
     MH_ASSERT(m_vertData.size() == m_normalData.size());
@@ -102,7 +120,7 @@ void Mesh::init()
     for (size_t i = 0; i < nVerts(); ++i)
     {
         m_verts.push_back(std::make_shared<Vertex>(
-            m_vertData[i], m_normalData[i], m_colorData[i], i
+            m_vertData[i], m_normalData[i], m_colorData[i], m_textureCoordsData[i], i
         ));
     }
 
@@ -201,6 +219,11 @@ void Mesh::createVBO(void)
     MH_GEN_ARRAY_BUF(m_normalVboID, Eigen::Vector3f, nVerts(), &m_normalData[0](0), GL_FLOAT, 3, NORMAL_LOCATION);
     MH_GEN_ARRAY_BUF(m_colorVboID,  Eigen::Vector4f, nVerts(), &m_colorData[0](0),  GL_FLOAT, 4, COLOR_LOCATION);
 
+    if (m_hasTexture)
+    {
+        MH_GEN_ARRAY_BUF(m_textureVboID,  Eigen::Vector2f, nVerts(), &m_textureCoordsData[0](0), GL_FLOAT, 2, TEXTURE_LOCATION);
+    }
+
     m_min = Eigen::Map<Eigen::Matrix<float, -1, 3, Eigen::RowMajor> >(&m_vertData[0](0), nVerts(), 3).colwise().minCoeff();
     m_max = Eigen::Map<Eigen::Matrix<float, -1, 3, Eigen::RowMajor> >(&m_vertData[0](0), nVerts(), 3).colwise().maxCoeff();
 
@@ -221,6 +244,10 @@ void Mesh::deleteVBO(void)
     glDeleteBuffers     (1, &m_posVboID);
     glDeleteBuffers     (1, &m_normalVboID);
     glDeleteBuffers     (1, &m_colorVboID);
+    if (m_hasTexture)
+    {
+        glDeleteBuffers (1, &m_textureVboID);
+    }
 }
 
 void Mesh::update(bool force)

@@ -8,6 +8,7 @@ Mesh convertFromAssimp(const aiMesh * inputMesh)
     std::vector<Eigen::Vector3f> vertData;
     std::vector<Eigen::Vector3f> normalData;
     std::vector<Eigen::Vector3i> faceData;
+    std::vector<Eigen::Vector2f> textureData;
 
     for (size_t i = 0; i < inputMesh->mNumVertices; ++i)
     {
@@ -17,6 +18,13 @@ Mesh convertFromAssimp(const aiMesh * inputMesh)
         normalData.push_back(Eigen::Vector3f(inputMesh->mNormals[i].x,
                                              inputMesh->mNormals[i].y,
                                              inputMesh->mNormals[i].z));
+        if (inputMesh->HasTextureCoords(0))
+        {
+            textureData.push_back(Eigen::Vector2f(inputMesh->mTextureCoords[0][i].x,
+                                                  inputMesh->mTextureCoords[0][i].y));
+        } else {
+            textureData.push_back(Eigen::Vector2f(0.0f, 0.0f));
+        }
     }
 
     for (size_t i = 0; i < inputMesh->mNumFaces; ++i)
@@ -27,7 +35,11 @@ Mesh convertFromAssimp(const aiMesh * inputMesh)
                                            face->mIndices[2]));
     }
 
-    Mesh mesh(vertData, normalData, faceData);
+    Mesh mesh(vertData, normalData, textureData, faceData);
+    if (inputMesh->HasTextureCoords(0))
+    {
+        mesh.setHasTexture(true);
+    }
 
     return mesh;
 }
