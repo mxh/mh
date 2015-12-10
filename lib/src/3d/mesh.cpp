@@ -36,7 +36,7 @@ Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
 
 Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
            const std::vector<Eigen::Vector3f> & normalData,
-           const std::vector<Eigen::Vector2f> & textureCoordsData,
+           const std::vector<float2>          & textureCoordsData,
            const std::vector<Eigen::Vector3i> & faceData)
 : m_vertData          (vertData),
   m_normalData        (normalData),
@@ -52,17 +52,18 @@ Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
 }
 
 Mesh::Mesh(const Mesh & other)
-    : m_vertData         (other.m_vertData),
-      m_normalData       (other.m_normalData),
-      m_colorData        (other.m_colorData),
-      m_faceData         (other.m_faceData),
-      m_position         (other.m_position),
-      m_min              (other.m_min),
-      m_max              (other.m_max),
-      m_VBOCreated       (false),
-      m_hasTexture       (other.m_hasTexture),
-      m_hasTextureCoords (other.m_hasTextureCoords),
-      m_dirty            (true)
+    : m_vertData          (other.m_vertData),
+      m_normalData        (other.m_normalData),
+      m_colorData         (other.m_colorData),
+      m_textureCoordsData (other.m_textureCoordsData),
+      m_faceData          (other.m_faceData),
+      m_position          (other.m_position),
+      m_min               (other.m_min),
+      m_max               (other.m_max),
+      m_VBOCreated        (false),
+      m_hasTexture        (other.m_hasTexture),
+      m_hasTextureCoords  (other.m_hasTextureCoords),
+      m_dirty             (true)
 {
     init();
 }
@@ -71,32 +72,33 @@ void swap(Mesh & first, Mesh & second)
 {
     using std::swap;
 
-    swap(first.m_vertData,         second.m_vertData);
-    swap(first.m_faceData,         second.m_faceData);
-    swap(first.m_normalData,       second.m_normalData);
-    swap(first.m_colorData,        second.m_colorData);
+    swap(first.m_vertData,          second.m_vertData);
+    swap(first.m_faceData,          second.m_faceData);
+    swap(first.m_normalData,        second.m_normalData);
+    swap(first.m_colorData,         second.m_colorData);
+    swap(first.m_textureCoordsData, second.m_textureCoordsData);
 
-    swap(first.m_verts,            second.m_verts);
-    swap(first.m_halfedges,        second.m_halfedges);
-    swap(first.m_faces,            second.m_faces);
+    swap(first.m_verts,             second.m_verts);
+    swap(first.m_halfedges,         second.m_halfedges);
+    swap(first.m_faces,             second.m_faces);
 
-    swap(first.m_position,         second.m_position);
+    swap(first.m_position,          second.m_position);
 
-    swap(first.m_min,              second.m_min);
-    swap(first.m_max,              second.m_max);
+    swap(first.m_min,               second.m_min);
+    swap(first.m_max,               second.m_max);
 
-    swap(first.m_bvh,              second.m_bvh);
+    swap(first.m_bvh,               second.m_bvh);
 
-    swap(first.m_hasTexture,       second.m_hasTexture);
-    swap(first.m_hasTextureCoords, second.m_hasTextureCoords);
+    swap(first.m_hasTexture,        second.m_hasTexture);
+    swap(first.m_hasTextureCoords,  second.m_hasTextureCoords);
 
-    swap(first.m_dirty,            second.m_dirty);
+    swap(first.m_dirty,             second.m_dirty);
 
-    swap(first.m_vaoID,            second.m_vaoID);
-    swap(first.m_indexVboID,       second.m_indexVboID);
-    swap(first.m_posVboID,         second.m_posVboID);
-    swap(first.m_normalVboID,      second.m_normalVboID);
-    swap(first.m_colorVboID,       second.m_colorVboID);
+    swap(first.m_vaoID,             second.m_vaoID);
+    swap(first.m_indexVboID,        second.m_indexVboID);
+    swap(first.m_posVboID,          second.m_posVboID);
+    swap(first.m_normalVboID,       second.m_normalVboID);
+    swap(first.m_colorVboID,        second.m_colorVboID);
 }
 
 Mesh & Mesh::operator=(Mesh other)
@@ -226,9 +228,9 @@ void Mesh::createVBO(void)
     MH_GEN_ARRAY_BUF(m_normalVboID, Eigen::Vector3f, nVerts(), &m_normalData[0](0), GL_FLOAT, 3, NORMAL_LOCATION);
     MH_GEN_ARRAY_BUF(m_colorVboID,  Eigen::Vector4f, nVerts(), &m_colorData[0](0),  GL_FLOAT, 4, COLOR_LOCATION);
 
-    if (m_hasTexture)
+    if (m_hasTexture && m_hasTextureCoords)
     {
-        MH_GEN_ARRAY_BUF(m_textureVboID,  Eigen::Vector2f, nVerts(), &m_textureCoordsData[0](0), GL_FLOAT, 2, TEXTURE_LOCATION);
+        MH_GEN_ARRAY_BUF(m_textureVboID,  float2, nVerts(), &m_textureCoordsData[0][0], GL_FLOAT, 2, TEXTURE_LOCATION);
     }
 
     m_min = Eigen::Map<Eigen::Matrix<float, -1, 3, Eigen::RowMajor> >(&m_vertData[0](0), nVerts(), 3).colwise().minCoeff();
@@ -251,7 +253,7 @@ void Mesh::deleteVBO(void)
     glDeleteBuffers     (1, &m_posVboID);
     glDeleteBuffers     (1, &m_normalVboID);
     glDeleteBuffers     (1, &m_colorVboID);
-    if (m_hasTexture)
+    if (m_hasTexture && m_hasTextureCoords)
     {
         glDeleteBuffers (1, &m_textureVboID);
     }

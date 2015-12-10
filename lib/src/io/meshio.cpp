@@ -8,7 +8,7 @@ Mesh convertFromAssimp(const aiMesh * inputMesh)
     std::vector<Eigen::Vector3f> vertData;
     std::vector<Eigen::Vector3f> normalData;
     std::vector<Eigen::Vector3i> faceData;
-    std::vector<Eigen::Vector2f> textureData;
+    std::vector<float2> textureData;
 
     for (size_t i = 0; i < inputMesh->mNumVertices; ++i)
     {
@@ -20,10 +20,11 @@ Mesh convertFromAssimp(const aiMesh * inputMesh)
                                              inputMesh->mNormals[i].z));
         if (inputMesh->HasTextureCoords(0))
         {
-            textureData.push_back(Eigen::Vector2f(inputMesh->mTextureCoords[0][i].x,
-                                                  inputMesh->mTextureCoords[0][i].y));
+            float2 coords = makeFloat2(inputMesh->mTextureCoords[0][i].x,
+                                       inputMesh->mTextureCoords[0][i].y);
+            textureData.push_back(coords);
         } else {
-            textureData.push_back(Eigen::Vector2f(0.0f, 0.0f));
+            textureData.push_back(makeFloat2(0.0f, 0.0f));
         }
     }
 
@@ -38,7 +39,7 @@ Mesh convertFromAssimp(const aiMesh * inputMesh)
     Mesh mesh(vertData, normalData, textureData, faceData);
     if (inputMesh->HasTextureCoords(0))
     {
-        mesh.setHasTexture(true);
+        mesh.setHasTextureCoords(true);
     }
 
     return mesh;

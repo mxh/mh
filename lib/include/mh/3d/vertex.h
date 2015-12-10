@@ -15,7 +15,7 @@ public:
     Vertex(Eigen::Vector3f & position,
            Eigen::Vector3f & normal,
            Eigen::Vector4f & color,
-           Eigen::Vector2f & textureCoords,
+           float2          & textureCoords,
            int               idx)
     : m_position(position),
       m_normal(normal),
@@ -26,7 +26,7 @@ public:
     EXPOSE            (Eigen::Vector3f, Position,      m_position)
     EXPOSE            (Eigen::Vector3f, Normal,        m_normal)
     EXPOSE            (Eigen::Vector4f, Color,         m_color)
-    EXPOSE            (Eigen::Vector2f, TextureCoords, m_textureCoords);
+    EXPOSE            (float2,          TextureCoords, m_textureCoords);
 
     EXPOSE_SHARED_PTR (HalfEdge,        HalfEdge, m_halfedge)
 
@@ -38,7 +38,7 @@ private:
     Eigen::Vector3f &         m_position;
     Eigen::Vector3f &         m_normal;
     Eigen::Vector4f &         m_color;
-    Eigen::Vector2f &         m_textureCoords;
+    float2          &         m_textureCoords;
 
     int                       m_idx; // index in mesh
 

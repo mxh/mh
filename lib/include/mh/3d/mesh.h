@@ -38,7 +38,7 @@ public:
                                                                const std::vector<Eigen::Vector3i> & faceData);
                                                     Mesh      (const std::vector<Eigen::Vector3f> & vertData,
                                                                const std::vector<Eigen::Vector3f> & normalData,
-                                                               const std::vector<Eigen::Vector2f> & textureCoordsData,
+                                                               const std::vector<float2>          & textureCoordsData,
                                                                const std::vector<Eigen::Vector3i> & faceData);
                                                     Mesh      (const Mesh& other);
 
@@ -57,10 +57,10 @@ public:
     const std::vector<Eigen::Vector3f> &            getVertData()          const {                    return m_vertData; }
     const std::vector<Eigen::Vector3f> &            getNormalData()        const {                    return m_normalData; }
     const std::vector<Eigen::Vector4f> &            getColorData()         const {                    return m_colorData; }
-    const std::vector<Eigen::Vector2f> &            getTextureCoordsData() const {                    return m_textureCoordsData; }
+    const std::vector<float2> &                     getTextureCoordsData() const {                    return m_textureCoordsData; }
 
     std::shared_ptr<Texture>                        getTexture()                                 { return m_texture; }
-    void                                            setTexture(std::shared_ptr<Texture> texture) { m_texture = texture; setHasTexture(true); }
+    void                                            setTexture(std::shared_ptr<Texture> texture) { m_texture = texture; setHasTexture(true); m_dirty = true; }
 
     std::shared_ptr<BVH>                            getBVH()                     { update(); return m_bvh; }
 
@@ -101,7 +101,7 @@ private:
     std::vector<Eigen::Vector3f>            m_vertData;
     std::vector<Eigen::Vector3f>            m_normalData;
     std::vector<Eigen::Vector4f>            m_colorData;
-    std::vector<Eigen::Vector2f>            m_textureCoordsData;
+    std::vector<float2>                     m_textureCoordsData;
     std::vector<Eigen::Vector3i>            m_faceData;
 
     // structures

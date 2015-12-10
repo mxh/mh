@@ -6,4 +6,6 @@
 
 #include "eigen3/Eigen/Core"
 
+#include "mh/base/datatypes.h"
+
 #endif /* IMPORTS_H */
