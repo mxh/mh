@@ -142,22 +142,27 @@ void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f 
 void setCameraLookatScene(Camera & camera, Scene & scene)
 {
     Eigen::Vector3f center = scene.getCenter();
-
-    std::vector<float> radii;
-    radii.resize(scene.getMeshes().size());
-    std::transform(scene.getMeshes().begin(), scene.getMeshes().end(), radii.begin(),
-        [&center, &camera] (const std::shared_ptr<Mesh> & x)
-        {
-            return getFittingSphereRadius(applyTransform(x->getModelToWorld(), x->getVertData()), center);
-        }
-    );
-    
-    float r = *std::max_element(radii.begin(), radii.end());
-    float dist = r / std::sin(0.5 * camera.getFOV() * M_PI / 180);
+    float r                = getSceneBoundingSphereRadius(scene);
+    float dist             = getIdealSphereDist(camera, r);
 
     camera.setPosition(center - camera.getForward() * dist);
-    camera.setNear(dist - 2*r);
-    camera.setFar(dist + 2*r);
+    camera.setNear    (dist - r);
+    camera.setFar     (dist + r);
+}
+
+float getIdealSphereDist(Camera & camera, float radius)
+{
+    float dist = radius / std::sin(0.5 * camera.getFOV() * M_PI / 180); 
+
+    return dist;
+}
+
+float getIdealSceneDist(Camera & camera, Scene & scene)
+{
+    float r    = getSceneBoundingSphereRadius(scene);
+    float dist = getIdealSphereDist(camera, r);
+
+    return dist;
 }
 
 void cameraRotate(Camera & camera, Eigen::Vector3f center, Eigen::Vector3f axis, float angle)
