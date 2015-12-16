@@ -8,7 +8,7 @@
 
 #include <GL/glew.h>
 
-#include "eigen3/Eigen/Geometry"
+#include "Eigen/Geometry"
 
 #include "mh/3d/bvh.h"
 #include "mh/3d/face.h"

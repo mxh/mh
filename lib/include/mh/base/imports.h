@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "eigen3/Eigen/Core"
+#include "Eigen/Core"
 
 #include "mh/base/datatypes.h"
 

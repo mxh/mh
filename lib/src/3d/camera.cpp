@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "eigen3/Eigen/Geometry"
+#include "Eigen/Geometry"
 
 #include "mh/3d/camera.h"
 #include "mh/3d/mesh.h"

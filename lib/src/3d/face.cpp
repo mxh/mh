@@ -1,6 +1,6 @@
 #include "mh/3d/face.h"
 
-#include "eigen3/Eigen/Geometry"
+#include "Eigen/Geometry"
 
 namespace mh
 {

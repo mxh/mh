@@ -9,7 +9,7 @@
 
 #include "mh/3d/scene.h"
 
-#include "eigen3/Eigen/Geometry"
+#include "Eigen/Geometry"
 
 namespace mh
 {
