@@ -165,6 +165,18 @@ float getIdealSceneDist(Camera & camera, Scene & scene)
     return dist;
 }
 
+Ray getRayThroughScreen(Camera & camera, float x, float y)
+{
+    Eigen::Vector4f ndcCoord(x, y, -1.0, 1.0);
+
+    Eigen::Vector4f worldCoord = camera.getWorldToCamera().inverse() * camera.getCameraToClip().inverse() * ndcCoord;
+    worldCoord /= worldCoord(3);
+                
+    mh::Ray ray(camera.getPosition(), (worldCoord.block<3, 1>(0, 0) - camera.getPosition()).normalized());
+
+    return ray;
+}
+
 void cameraRotate(Camera & camera, Eigen::Vector3f center, Eigen::Vector3f axis, float angle)
 {
     Eigen::Quaternionf rotation;
