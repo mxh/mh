@@ -26,6 +26,8 @@ public:
     const std::vector<std::shared_ptr<Mesh> > & getMeshes            (void) const { return m_meshes; }
           std::vector<std::shared_ptr<Mesh> > & getMeshes            (void)       { return m_meshes; m_dirty = true;}
 
+    bool                                        hasMeshes            (void) const { return m_meshes.size(); }
+
     std::shared_ptr<BVH>                        getBVH               (void)       { return m_bvh; }
 
     void                                        draw                 (std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera); 
