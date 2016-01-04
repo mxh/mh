@@ -5,6 +5,8 @@
 namespace
 {
 
+using namespace mh;
+
 void getBarycentricCoordsOfProjection(Eigen::Vector3f p, const Face & face, float & alpha, float & beta, float & gamma)
 {
     Eigen::Vector3f A = face.getVertex(0)->getPosition();
@@ -18,8 +20,8 @@ void getBarycentricCoordsOfProjection(Eigen::Vector3f p, const Face & face, floa
 
     Eigen::Vector3f w = p - A;
 
-    gamma = (u.cross(w).transpose() * n) / n.squaredNorm();
-    beta  = (w.cross(v).transpose() * n) / n.squaredNorm();
+    gamma = ((u.cross(w).transpose() * n) / n.squaredNorm()).value();
+    beta  = ((w.cross(v).transpose() * n) / n.squaredNorm()).value();
     alpha = 1 - (gamma + beta);
 }
 
@@ -139,6 +141,86 @@ Intersection<Face> Face::intersect(const Ray & ray, bool backfacing)
     }
 
     return Intersection<Face>();
+
+}
+
+Eigen::Vector3f Face::getClosestPoint(Eigen::Vector3f point)
+{
+    // find barycentric coordinates
+    float alpha, beta, gamma;
+    getBarycentricCoordsOfProjection(point, *this, alpha, beta, gamma);
+
+    // 7 different cases
+    
+    // point is inside triangle
+    if (alpha >= 0.0f && alpha <= 1.0f &&
+        beta  >= 0.0f && beta  <= 1.0f &&
+        gamma >= 0.0f && gamma <= 1.0f)
+    {
+        return alpha * getVertex(0)->getPosition() +
+               beta  * getVertex(1)->getPosition() +
+               gamma * getVertex(2)->getPosition();
+    }
+
+    // closest to BC
+    if (beta >= 0.0f && gamma >= 0.0f && (beta + gamma >= 1.0f))
+    {
+        float scale = beta + gamma;
+        beta  /= scale;
+        gamma /= scale;
+        alpha = 1 - (beta + gamma);
+
+        return alpha * getVertex(0)->getPosition() +
+               beta  * getVertex(1)->getPosition() +
+               gamma * getVertex(2)->getPosition();
+    }
+
+    // closest to AC
+    if (alpha >= 0.0f && gamma >= 0.0f && (alpha + gamma >= 1.0f))
+    {
+        float scale = alpha + gamma;
+        alpha /= scale;
+        gamma /= scale;
+        beta = 1 - (alpha + gamma);
+
+        return alpha * getVertex(0)->getPosition() +
+               beta  * getVertex(1)->getPosition() +
+               gamma * getVertex(2)->getPosition();
+    }
+
+    // closest to AB
+    if (alpha >= 0.0f && beta >= 0.0f && (alpha + beta >= 1.0f))
+    {
+        float scale = alpha + beta;
+        alpha /= scale;
+        beta  /= scale;
+        gamma = 1 - (alpha + beta);
+        
+        return alpha * getVertex(0)->getPosition() +
+               beta  * getVertex(1)->getPosition() +
+               gamma * getVertex(2)->getPosition();
+    }
+
+    // closest to A
+    if (beta < 0.0f && alpha > 1.0f && (beta + alpha >= 1.0f))
+    {
+        return getVertex(0)->getPosition();
+    }
+
+    // closest to B
+    if (gamma < 0.0f && beta > 0.0f && (beta + gamma >= 1.0f))
+    {
+        return getVertex(1)->getPosition();
+    }
+
+    // closest to C
+    if (beta < 0.0f && gamma > 1.0f && (beta + gamma >= 1.0f))
+    {
+        return getVertex(2)->getPosition();
+    }
+
+    // should not reach here!
+    return Eigen::Vector3f::Zero();
 
 }
 

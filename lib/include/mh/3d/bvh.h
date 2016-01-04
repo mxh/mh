@@ -18,23 +18,24 @@ public:
     static const int Y = 1;
     static const int Z = 2;
 
-    void                  setLeft       (std::shared_ptr<BVH> left)  { m_left = left; }
-    std::shared_ptr<BVH>  getLeft       (void)                       { return m_left; }
-    void                  setRight      (std::shared_ptr<BVH> right) { m_right = right; }
-    std::shared_ptr<BVH>  getRight      (void)                       { return m_right; }
+    void                  setLeft         (std::shared_ptr<BVH> left)  { m_left = left; }
+    std::shared_ptr<BVH>  getLeft         (void)                       { return m_left; }
+    void                  setRight        (std::shared_ptr<BVH> right) { m_right = right; }
+    std::shared_ptr<BVH>  getRight        (void)                       { return m_right; }
 
-    void                  setFace       (std::shared_ptr<Face> face) { m_face = face; }
-    std::shared_ptr<Face> getFace       (void)                       { return m_face; }
+    void                  setFace         (std::shared_ptr<Face> face) { m_face = face; }
+    std::shared_ptr<Face> getFace         (void)                       { return m_face; }
 
-    Eigen::Vector3f       getMin        (void) const                 { return m_min; }
-    void                  setMin        (Eigen::Vector3f min)        { m_min = min; }
-    Eigen::Vector3f       getMax        (void)                       { return m_max; }
-    void                  setMax        (Eigen::Vector3f max)        { m_max = max; }
+    Eigen::Vector3f       getMin          (void) const                 { return m_min; }
+    void                  setMin          (Eigen::Vector3f min)        { m_min = min; }
+    Eigen::Vector3f       getMax          (void)                       { return m_max; }
+    void                  setMax          (Eigen::Vector3f max)        { m_max = max; }
 
-    bool                  isLeaf        (void)                       { return !(m_left || m_right); }
+    bool                  isLeaf          (void)                       { return !(m_left || m_right); }
 
-    Intersection<BVH>     aabbIntersect (const Ray & ray);
-    Intersection<Face>    intersect     (const Ray & ray, bool backfacing=false, int depth=0, Eigen::Vector3f * offset=nullptr);
+    Intersection<BVH>     aabbIntersect   (const Ray & ray);
+    Intersection<Face>    intersect       (const Ray & ray, bool backfacing=false, int depth=0, Eigen::Vector3f * offset=nullptr);
+    Eigen::Vector3f       getClosestPoint (Eigen::Vector3f point);
     
 protected:
 

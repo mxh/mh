@@ -7,9 +7,9 @@ namespace
 
 float distanceToAABB(Eigen::Vector3f min, Eigen::Vector3f max, Eigen::Vector3f p)
 {
-    float dx = std::max(std::max(min(0) - p(0), 0), p(0) - max(0));
-    float dy = std::max(std::max(min(1) - p(1), 0), p(1) - max(1));
-    float dz = std::max(std::max(min(2) - p(2), 0), p(2) - max(2));
+    float dx = std::max(std::max(min(0) - p(0), 0.0f), p(0) - max(0));
+    float dy = std::max(std::max(min(1) - p(1), 0.0f), p(1) - max(1));
+    float dz = std::max(std::max(min(2) - p(2), 0.0f), p(2) - max(2));
 
     return std::sqrt(dx*dx + dy*dy + dz*dz);
 }
@@ -115,6 +115,42 @@ Intersection<Face> BVH::intersect(const Ray & ray, bool backfacing, int depth, E
     }
 
     return Intersection<Face>();
+}
+
+Eigen::Vector3f BVH::getClosestPoint(Eigen::Vector3f point)
+{
+    if (isLeaf())
+    {
+        return m_face->getClosestPoint(point);
+    }
+
+    float lDist = distanceToAABB(m_left->getMin(), m_left->getMax(), point);
+    float rDist = distanceToAABB(m_right->getMin(), m_right->getMax(), point);
+
+    bool  leftSmallest    = lDist < rDist;
+    auto  closestAABB     = leftSmallest ? m_left  : m_right;
+    /*float closestAABBDist = leftSmallest ? lDist   : rDist;*/
+    auto  otherAABB       = leftSmallest ? m_right : m_left;
+    float otherAABBDist   = leftSmallest ? rDist   : lDist;
+
+    Eigen::Vector3f closestPoint;
+    float           dist;
+
+    closestPoint = closestAABB->getClosestPoint(point);
+    dist         = (point - closestPoint).norm();
+
+    if (dist > otherAABBDist)
+    {
+        Eigen::Vector3f altClosestPoint = otherAABB->getClosestPoint(point);
+        float altDist                   = (point - altClosestPoint).norm();
+
+        if (altDist < dist)
+        {
+            closestPoint = altClosestPoint;
+        }
+    }
+
+    return closestPoint;
 }
 
 std::shared_ptr<BVH> constructBVHFromFace(std::shared_ptr<Face> face)
