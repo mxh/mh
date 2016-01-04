@@ -1,5 +1,7 @@
 #include "mh/io/meshio.h"
 
+#include <fstream>
+
 namespace mh
 {
 
@@ -66,5 +68,60 @@ std::vector<std::shared_ptr<Mesh> > loadMeshesFromOBJ(std::string path)
     return meshes;
 }
 
+void saveMeshToPLY(const Mesh & mesh, std::string path)
+{
+    std::ofstream f(path);
+
+    f << "ply\n";
+    f << "format ascii 1.0\n";
+
+    f << "element vertex " << mesh.getVertData().size() << "\n";
+    f << "property float x\n";
+    f << "property float y\n";
+    f << "property float z\n";
+
+    f << "element face " << mesh.getFaces().size() << "\n";
+    f << "property list uchar int vertex_indices\n";
+
+    f << "end_header\n";
+
+    for (auto it = mesh.getVertData().begin(); it != mesh.getVertData().end(); ++it)
+    {
+        f << (*it)(0) << " " << (*it)(1) << " " << (*it)(2) << "\n";
+    }
+    
+    for (auto it = mesh.getFaces().begin(); it != mesh.getFaces().end(); ++it)
+    {
+        f << "3 " << (*it)->getVertex(0)->idx() << " "
+                  << (*it)->getVertex(1)->idx() << " "
+                  << (*it)->getVertex(2)->idx() << "\n";
+    }
+
+    f.close();
+}
+
+void savePointsToPLY(std::vector<Eigen::Vector3f> & points, std::string path)
+{
+    std::ofstream f(path);
+
+    f << "ply\n";
+    f << "format ascii 1.0\n";
+
+    f << "element vertex " << points.size() << "\n";
+    f << "property float x\n";
+    f << "property float y\n";
+    f << "property float z\n";
+
+    f << "end_header\n";
+
+    for (auto it = points.begin(); it != points.end(); ++it)
+    {
+        f << (*it)(0) << " "
+          << (*it)(1) << " "
+          << (*it)(2) << "\n";
+    }
+
+    f.close();
+}
 
 } // namespace mh

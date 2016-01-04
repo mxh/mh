@@ -15,6 +15,8 @@ namespace mh
 
 Mesh                                convertFromAssimp (const aiMesh * inputMesh);
 std::vector<std::shared_ptr<Mesh> > loadMeshesFromOBJ (std::string path);
+void                                saveMeshToPLY     (const Mesh & mesh, std::string path);
+void                                savePointsToPLY   (std::vector<Eigen::Vector3f> & points, std::string path);
 
 } // namespace mh
 #endif /* MESHIO_H */
