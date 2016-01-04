@@ -21,14 +21,15 @@ public:
 
     EXPOSE_SHARED_PTR(HalfEdge, HalfEdge, m_halfedge)
 
-    int                           idx           (void)       const { return m_idx; }
+    int                           idx             (void)       const { return m_idx; }
 
-    std::shared_ptr<const Vertex> getVertex     (size_t idx) const;
-    std::shared_ptr<Vertex>       getVertex     (size_t idx);
-    Eigen::Vector3f               getEdge       (size_t idx) const;
-    Eigen::Vector3f               getFaceNormal (void)       const;
+    std::shared_ptr<const Vertex> getVertex       (size_t idx) const;
+    std::shared_ptr<Vertex>       getVertex       (size_t idx);
+    Eigen::Vector3f               getEdge         (size_t idx) const;
+    Eigen::Vector3f               getFaceNormal   (void)       const;
 
-    Intersection<Face>            intersect     (const Ray & ray, bool backfacing=false);
+    Intersection<Face>            intersect       (const Ray & ray, bool backfacing=false);
+    Eigen::Vector3f               getClosestPoint (Eigen::Vector3f point);
 
 protected:
 

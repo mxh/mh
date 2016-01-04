@@ -2,6 +2,29 @@
 
 #include "Eigen/Geometry"
 
+namespace
+{
+
+void getBarycentricCoordsOfProjection(Eigen::Vector3f p, const Face & face, float & alpha, float & beta, float & gamma)
+{
+    Eigen::Vector3f A = face.getVertex(0)->getPosition();
+    Eigen::Vector3f B = face.getVertex(1)->getPosition();
+    Eigen::Vector3f C = face.getVertex(2)->getPosition();
+
+    Eigen::Vector3f u = B - A;
+    Eigen::Vector3f v = C - A;
+
+    Eigen::Vector3f n = u.cross(v);
+
+    Eigen::Vector3f w = p - A;
+
+    gamma = (u.cross(w).transpose() * n) / n.squaredNorm();
+    beta  = (w.cross(v).transpose() * n) / n.squaredNorm();
+    alpha = 1 - (gamma + beta);
+}
+
+} // internal namespace
+
 namespace mh
 {
 

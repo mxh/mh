@@ -1,5 +1,21 @@
 #include "mh/3d/bvh.h"
 
+#include <cmath>
+
+namespace
+{
+
+float distanceToAABB(Eigen::Vector3f min, Eigen::Vector3f max, Eigen::Vector3f p)
+{
+    float dx = std::max(std::max(min(0) - p(0), 0), p(0) - max(0));
+    float dy = std::max(std::max(min(1) - p(1), 0), p(1) - max(1));
+    float dz = std::max(std::max(min(2) - p(2), 0), p(2) - max(2));
+
+    return std::sqrt(dx*dx + dy*dy + dz*dz);
+}
+
+} // anonymous namespace
+
 namespace mh
 {
 
