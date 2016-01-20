@@ -7,6 +7,7 @@
 #include "mh/ext/imgui/imgui.h"
 #include "mh/ext/imgui/imgui_impl_glfw.h"
 
+#include "mh/3d/camerabase.h"
 #include "mh/3d/ray.h"
 #include "mh/3d/scene.h"
 
@@ -71,7 +72,7 @@ inline std::istream & operator>> (std::istream & is, CameraParameters & cp)
     return is;
 }
 
-class Camera
+class Camera : public CameraBase
 {
 public:
     Camera(float near, float far, float fov, float aspect, float speed, float sensitivity)
@@ -96,9 +97,9 @@ public:
     EXPOSE_DIRTY(Eigen::Vector3f, Forward,     m_forward);
     EXPOSE_DIRTY(Eigen::Vector3f, Up,          m_up);
 
-    Eigen::Matrix4f getCameraToClip    (void);
-    Eigen::Affine3f getWorldToCamera   (void);
-
+    virtual Eigen::Matrix4f getCameraToClip    (void);
+    virtual Eigen::Affine3f getWorldToCamera   (void);
+    
 protected:
     void            recomputeTransforms(void);
 

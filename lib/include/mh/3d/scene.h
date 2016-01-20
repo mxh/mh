@@ -4,6 +4,7 @@
 #include "mh/base/defs.h"
 #include "mh/base/imports.h"
 
+#include "mh/3d/camerabase.h"
 #include "mh/3d/bvh.h"
 #include "mh/3d/mesh.h"
 
@@ -30,7 +31,7 @@ public:
 
     std::shared_ptr<BVH>                        getBVH               (void)       { return m_bvh; }
 
-    void                                        draw                 (std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera); 
+    void                                        draw                 (std::shared_ptr<Shader> shader, std::shared_ptr<CameraBase> camera); 
 
     Eigen::Vector3f                             getCenter            (void);
 

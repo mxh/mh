@@ -27,7 +27,8 @@ namespace
     {
         float range = std::tan(fov * 0.5f * M_PI / 180.0f) * near;
 
-        float Sx = (2.0f * near) / (range * aspect + range * aspect);
+        //float Sx = (2.0f * near) / (range * aspect + range * aspect);
+        float Sx = near / (range * aspect);
         float Sy = near / range;
         float Sz = -(far + near) / (far - near);
 
@@ -70,6 +71,8 @@ void Camera::recomputeTransforms(void)
 {
     m_cameraToClip  = computeProjectionMatrix(m_near, m_far, m_fov, m_aspect);
     m_worldToCamera = computeViewMatrix(m_forward, m_up, m_position);
+
+    m_dirty = false;
 }
 
 void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f center)

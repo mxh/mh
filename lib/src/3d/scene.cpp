@@ -67,7 +67,7 @@ Eigen::Vector3f Scene::getMax(void) const
     return max;
 }
 
-void Scene::draw(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)
+void Scene::draw(std::shared_ptr<Shader> shader, std::shared_ptr<CameraBase> camera)
 {
     update();
 
