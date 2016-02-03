@@ -6652,7 +6652,7 @@ bool ImGui::DragIntRange2(const char* label, int* v_current_min, int* v_current_
     return value_changed;
 }
 
-void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size)
+void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, void (*hover_callback)(int, float, void*), void * hover_callback_this)
 {
     ImGuiWindow* window = GetCurrentWindow();
     if (window->SkipItems)
@@ -6707,9 +6707,17 @@ void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_ge
         const float v0 = values_getter(data, (v_idx + values_offset) % values_count);
         const float v1 = values_getter(data, (v_idx + 1 + values_offset) % values_count);
         if (plot_type == ImGuiPlotType_Lines)
+        {
             ImGui::SetTooltip("%d: %8.4g\n%d: %8.4g", v_idx, v0, v_idx+1, v1);
+        }
         else if (plot_type == ImGuiPlotType_Histogram)
+        {
             ImGui::SetTooltip("%d: %8.4g", v_idx, v0);
+            if (hover_callback)
+            {
+                hover_callback(v_idx, v0, hover_callback_this);
+            }
+        }
         v_hovered = v_idx;
     }
 
@@ -6781,15 +6789,15 @@ void ImGui::PlotLines(const char* label, float (*values_getter)(void* data, int 
     PlotEx(ImGuiPlotType_Lines, label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size);
 }
 
-void ImGui::PlotHistogram(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int stride)
+void ImGui::PlotHistogram(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int stride, void (*hover_callback)(int, float, void*), void * hover_callback_this)
 {
     ImGuiPlotArrayGetterData data(values, stride);
-    PlotEx(ImGuiPlotType_Histogram, label, &Plot_ArrayGetter, (void*)&data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size);
+    PlotEx(ImGuiPlotType_Histogram, label, &Plot_ArrayGetter, (void*)&data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size, hover_callback, hover_callback_this);
 }
 
-void ImGui::PlotHistogram(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size)
+void ImGui::PlotHistogram(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, void (*hover_callback)(int, float, void*), void * hover_callback_this)
 {
-    PlotEx(ImGuiPlotType_Histogram, label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size);
+    PlotEx(ImGuiPlotType_Histogram, label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size, hover_callback, hover_callback_this);
 }
 
 // size_arg (for each axis) < 0.0f: align to end, 0.0f: auto, > 0.0f: specified size
