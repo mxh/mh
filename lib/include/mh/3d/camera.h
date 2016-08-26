@@ -36,6 +36,8 @@ public:
     Eigen::Matrix4f getCameraToClip    (void);
     Eigen::Affine3f getWorldToCamera   (void);
 
+    void setCameraRotation(const Eigen::Matrix3f & M);
+
 protected:
     void            recomputeTransforms(void);
 

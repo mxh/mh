@@ -6,7 +6,8 @@
 
 #include <map>
 
-#include <GL/glew.h>
+//#include <GL/glew.h>
+#include "mh/ext/gl3w/gl3w.h"
 #include <GLFW/glfw3.h>
 
 #include "eigen3/Eigen/Geometry"
@@ -18,6 +19,13 @@ void setUniform(const std::string & name, TYPE value) \
 { \
     int location = glGetUniformLocation(m_program, name.c_str()); \
     glUniformMatrix ## EXT(location, 1, GL_FALSE, value.data()); \
+}
+
+#define EXPOSE_UNIFORM_SETTER_VECTOR(TYPE, EXT) \
+void setUniform(const std::string & name, TYPE value) \
+{ \
+    int location = glGetUniformLocation(m_program, name.c_str()); \
+    glUniform ## EXT(location, 1, value.data()); \
 }
 
 #define EXPOSE_UNIFORM_SETTER_BUILTIN(TYPE, EXT) \
@@ -42,6 +50,9 @@ public:
     EXPOSE_UNIFORM_SETTER_MATRIX  (const Eigen::Matrix3f&, 3fv);
     EXPOSE_UNIFORM_SETTER_MATRIX  (const Eigen::Matrix4f&, 4fv);
     EXPOSE_UNIFORM_SETTER_MATRIX  (const Eigen::Affine3f&, 4fv);
+
+    EXPOSE_UNIFORM_SETTER_VECTOR  (const Eigen::Vector3f, 3fv);
+    EXPOSE_UNIFORM_SETTER_VECTOR  (const Eigen::Vector4f, 4fv);
 
     EXPOSE_UNIFORM_SETTER_BUILTIN (float, f);
     EXPOSE_UNIFORM_SETTER_BUILTIN (int, i);

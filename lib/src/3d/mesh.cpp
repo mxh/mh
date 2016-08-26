@@ -1,5 +1,8 @@
+#include <algorithm>
 #include <map>
 #include <vector>
+
+#include "eigen3/Eigen/Geometry"
 
 #include "mh/3d/mesh.h"
 
@@ -24,24 +27,74 @@ Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
            const std::vector<Eigen::Vector3i> & faceData)
 : m_vertData   (vertData),
   m_normalData (normalData),
+  m_textureCoordsData (vertData.size(), makeFloat2(0.0f, 0.0f)),
   m_faceData   (faceData),
+  m_diffuse_texture (nullptr),
+  m_hasTextureCoords(false),
   m_position   (Eigen::Vector3f::Zero()),
+  m_scale      (1.0f),
+  m_rotation   (Eigen::AngleAxisf(0, Eigen::Vector3f::UnitY())),
   m_VBOCreated (false),
-  m_dirty      (true)
+  m_dirty      (true),
+  m_minmax_dirty(true)
 {
     init();
 }
+
+Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
+           const std::vector<Eigen::Vector3i> & faceData)
+: m_vertData   (vertData),
+  m_normalData (vertData.size(), Eigen::Vector3f(0.0f, 0.0f, 0.0f)),
+  m_textureCoordsData (vertData.size(), makeFloat2(0.0f, 0.0f)),
+  m_faceData   (faceData),
+  m_diffuse_texture (nullptr),
+  m_hasTextureCoords(false),
+  m_position   (Eigen::Vector3f::Zero()),
+  m_scale      (1.0f),
+  m_rotation   (Eigen::AngleAxisf(0, Eigen::Vector3f::UnitY())),
+  m_VBOCreated (false),
+  m_dirty      (true),
+  m_minmax_dirty(true)
+{
+    init();
+}
+
+Mesh::Mesh(const std::vector<Eigen::Vector3f> & vertData,
+           const std::vector<float2>          & textureCoordsData,
+           const std::vector<Eigen::Vector3i> & faceData)
+: m_vertData          (vertData),
+  m_normalData        (vertData.size(), Eigen::Vector3f(0.0f, 0.0f, 0.0f)),
+  m_textureCoordsData (textureCoordsData),
+  m_faceData          (faceData),
+  m_diffuse_texture   (nullptr),
+  m_hasTextureCoords  (true),
+  m_position          (Eigen::Vector3f::Zero()),
+  m_scale             (1.0f),
+  m_rotation          (Eigen::AngleAxisf(0, Eigen::Vector3f::UnitY())),
+  m_VBOCreated        (false),
+  m_dirty             (true),
+  m_minmax_dirty      (true)
+{
+    init();
+}
+        
 
 Mesh::Mesh(const Mesh & other)
     : m_vertData   (other.m_vertData),
       m_normalData (other.m_normalData),
       m_colorData  (other.m_colorData),
+      m_textureCoordsData (other.m_textureCoordsData),
       m_faceData   (other.m_faceData),
+      m_diffuse_texture (other.m_diffuse_texture),
+      m_hasTextureCoords(other.m_hasTextureCoords),
       m_position   (other.m_position),
+      m_scale      (other.m_scale),
+      m_rotation   (Eigen::AngleAxisf(0, Eigen::Vector3f::UnitY())),
       m_min        (other.m_min),
       m_max        (other.m_max),
       m_VBOCreated (false),
-      m_dirty      (true)
+      m_dirty      (true),
+      m_minmax_dirty(true)
 {
     init();
 }
@@ -53,13 +106,19 @@ void swap(Mesh & first, Mesh & second)
     swap(first.m_vertData,    second.m_vertData);
     swap(first.m_faceData,    second.m_faceData);
     swap(first.m_normalData,  second.m_normalData);
+    swap(first.m_textureCoordsData,  second.m_textureCoordsData);
     swap(first.m_colorData,   second.m_colorData);
 
     swap(first.m_verts,       second.m_verts);
     swap(first.m_halfedges,   second.m_halfedges);
     swap(first.m_faces,       second.m_faces);
 
+    swap(first.m_diffuse_texture, second.m_diffuse_texture);
+    swap(first.m_hasTextureCoords, second.m_hasTextureCoords);
+
     swap(first.m_position,    second.m_position);
+    swap(first.m_scale,       second.m_scale);
+    swap(first.m_rotation,    second.m_rotation);
 
     swap(first.m_min,         second.m_min);
     swap(first.m_max,         second.m_max);
@@ -67,6 +126,7 @@ void swap(Mesh & first, Mesh & second)
     swap(first.m_bvh,         second.m_bvh);
 
     swap(first.m_dirty,       second.m_dirty);
+    swap(first.m_minmax_dirty, second.m_minmax_dirty);
 
     swap(first.m_vaoID,       second.m_vaoID);
     swap(first.m_indexVboID,  second.m_indexVboID);
@@ -85,11 +145,12 @@ Mesh & Mesh::operator=(Mesh other)
 void Mesh::init()
 {
     // set GL vars
-    m_vaoID       = 0;
-    m_indexVboID  = 0;
-    m_posVboID    = 0;
-    m_normalVboID = 0;
-    m_colorVboID  = 0;
+    m_vaoID        = 0;
+    m_indexVboID   = 0;
+    m_posVboID     = 0;
+    m_normalVboID  = 0;
+    m_colorVboID   = 0;
+    m_textureVboID = 0;
 
     // construct half-edge structure
     MH_ASSERT(m_vertData.size() == m_normalData.size());
@@ -102,7 +163,7 @@ void Mesh::init()
     for (size_t i = 0; i < nVerts(); ++i)
     {
         m_verts.push_back(std::make_shared<Vertex>(
-            m_vertData[i], m_normalData[i], m_colorData[i], i
+            m_vertData[i], m_normalData[i], m_colorData[i], m_textureCoordsData[i], i
         ));
     }
 
@@ -139,14 +200,19 @@ void Mesh::init()
         m_halfedges.push_back(he_1);
         m_halfedges.push_back(he_2);
         m_halfedges.push_back(he_3);
+
+        m_verts[m_faceData[i][0]]->addFace(face);
+        m_verts[m_faceData[i][1]]->addFace(face);
+        m_verts[m_faceData[i][2]]->addFace(face);
     }
 
     // find twin edges
     std::map<std::pair<int, int>, std::shared_ptr<HalfEdge> > pairsVisited;
+    std::vector<std::pair<int, int> > pairsDone;
     for (size_t i = 0; i < m_halfedges.size(); ++i)
     {
         int idxA = m_halfedges[i]->getVertex()->idx();
-        int idxB = m_halfedges[i]->getNext()->getVertex()->idx();
+        int idxB = m_halfedges[i]->getNext()->getNext()->getVertex()->idx();
         if (idxA > idxB)
         {
             int tmp = idxA;
@@ -158,13 +224,13 @@ void Mesh::init()
         {
             m_halfedges[i]->setTwin(mapLoc->second);
             mapLoc->second->setTwin(m_halfedges[i]);
+            pairsDone.push_back(std::pair<int, int>(idxA, idxB));
         } else {
             pairsVisited.insert(std::pair<std::pair<int, int>, std::shared_ptr<HalfEdge> >(
                 std::pair<int, int>(idxA, idxB), m_halfedges[i]
             ));
         }
     }
-
 }
 
 std::vector<Eigen::Vector3i> Mesh::getFVI() const
@@ -182,7 +248,7 @@ std::vector<Eigen::Vector3i> Mesh::getFVI() const
     return fvi;
 }
 
-void Mesh::draw(void)
+void Mesh::draw(void) const
 {
     update();
 
@@ -191,7 +257,7 @@ void Mesh::draw(void)
     glBindVertexArray(0);
 }
 
-void Mesh::createVBO(void)
+void Mesh::createVBO(void) const
 {
     glGenVertexArrays(1, &m_vaoID);
     glBindVertexArray(m_vaoID);
@@ -201,8 +267,12 @@ void Mesh::createVBO(void)
     MH_GEN_ARRAY_BUF(m_normalVboID, Eigen::Vector3f, nVerts(), &m_normalData[0](0), GL_FLOAT, 3, NORMAL_LOCATION);
     MH_GEN_ARRAY_BUF(m_colorVboID,  Eigen::Vector4f, nVerts(), &m_colorData[0](0),  GL_FLOAT, 4, COLOR_LOCATION);
 
-    m_min = Eigen::Map<Eigen::Matrix<float, -1, 3, Eigen::RowMajor> >(&m_vertData[0](0), nVerts(), 3).colwise().minCoeff();
-    m_max = Eigen::Map<Eigen::Matrix<float, -1, 3, Eigen::RowMajor> >(&m_vertData[0](0), nVerts(), 3).colwise().maxCoeff();
+    if (m_diffuse_texture && m_hasTextureCoords)
+    {
+        std::cout << "Uploading texture coords" << std::endl;
+        MH_GEN_ARRAY_BUF(m_textureVboID, float2, nVerts(), &m_textureCoordsData[0][0], GL_FLOAT, 2, TEXTURE_LOCATION);
+    } 
+    updateMinMax();
 
     // element array buffers
     std::vector<Eigen::Vector3i> fvi = getFVI();
@@ -214,16 +284,21 @@ void Mesh::createVBO(void)
 
 }
 
-void Mesh::deleteVBO(void)
+void Mesh::deleteVBO(void) const
 {
     glDeleteVertexArrays(1, &m_vaoID);
     glDeleteBuffers     (1, &m_indexVboID);
     glDeleteBuffers     (1, &m_posVboID);
     glDeleteBuffers     (1, &m_normalVboID);
+    if (m_diffuse_texture && m_hasTextureCoords)
+    {
+        std::cout << "Deleting texture coords" << std::endl;
+        glDeleteBuffers     (1, &m_textureVboID);
+    }
     glDeleteBuffers     (1, &m_colorVboID);
 }
 
-void Mesh::update(bool force)
+void Mesh::update(bool force) const
 {
     if (m_dirty || force)
     {
@@ -238,18 +313,29 @@ void Mesh::update(bool force)
     }
 }
 
-Eigen::Vector3f Mesh::getCenter(void)
+void Mesh::updateMinMax() const
 {
-    update();
+    if (m_minmax_dirty)
+    {
+        m_min = Eigen::Map<Eigen::Matrix<float, -1, 3, Eigen::RowMajor> >(const_cast<float*>(&m_vertData[0](0)), nVerts(), 3).colwise().minCoeff();
+        m_max = Eigen::Map<Eigen::Matrix<float, -1, 3, Eigen::RowMajor> >(const_cast<float*>(&m_vertData[0](0)), nVerts(), 3).colwise().maxCoeff();
+    }
+
+    m_minmax_dirty = false;
+}
+
+Eigen::Vector3f Mesh::getCenter(void) const
+{
+    updateMinMax();
     return getModelToWorld() * ((m_min + m_max) / 2.0f);
 }
 
 Eigen::Affine3f Mesh::getModelToWorld(void) const
 {
-    return static_cast<Eigen::Affine3f>(Eigen::Translation3f(m_position));
+    return static_cast<Eigen::Affine3f>(Eigen::Translation3f(m_position)) * Eigen::UniformScaling<float>(m_scale) * m_rotation;
 }
 
-std::shared_ptr<BVH> constructBVHFromMesh(Mesh * mesh)
+std::shared_ptr<BVH> constructBVHFromMesh(const Mesh * mesh)
 {
     std::vector<std::shared_ptr<BVH> > faceBVHs;
 

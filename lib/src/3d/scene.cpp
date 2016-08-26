@@ -77,6 +77,11 @@ void Scene::draw(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)
     for (size_t i = 0; i < m_meshes.size(); ++i)
     {
         shader->setUniform("modelToWorld", m_meshes[i]->getModelToWorld());
+
+        shader->setUniform("diffuse", m_meshes[i]->getDiffuse());
+        shader->setUniform("specular", m_meshes[i]->getSpecular());
+        shader->setUniform("shininess", m_meshes[i]->getShininess());
+
         m_meshes[i]->draw();
     }
 

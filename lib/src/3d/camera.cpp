@@ -66,6 +66,14 @@ Eigen::Affine3f Camera::getWorldToCamera(void)
     return m_worldToCamera;
 }
 
+void Camera::setCameraRotation(const Eigen::Matrix3f & M)
+{
+    m_worldToCamera.linear() = M;
+    m_forward = -M.row(2);
+    m_up = M.row(1);
+    m_dirty = false;
+}
+
 void Camera::recomputeTransforms(void)
 {
     m_cameraToClip  = computeProjectionMatrix(m_near, m_far, m_fov, m_aspect);
@@ -133,8 +141,8 @@ void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f 
     } else if (io.MouseDown[2])
     {
         ImVec2 mouseDelta = io.MouseDelta;
-        Eigen::Vector3f translation = camera.getUp() * mouseDelta.y + camera.getForward().cross(camera.getUp()).normalized() * -mouseDelta.x;
-        Eigen::Vector3f newCameraPos = Eigen::Translation3f(translation) * camera.getPosition();
+        Eigen::Vector3f translation = camera.getSpeed() * (camera.getUp() * mouseDelta.y + camera.getForward().cross(camera.getUp()).normalized() * -mouseDelta.x);
+        Eigen::Vector3f newCameraPos = camera.getPosition() + translation;
         camera.setPosition(newCameraPos);
     }
 }
@@ -156,8 +164,8 @@ void setCameraLookatScene(Camera & camera, Scene & scene)
     float dist = r / std::sin(0.5 * camera.getFOV() * M_PI / 180);
 
     camera.setPosition(center - camera.getForward() * dist);
-    camera.setNear(dist - 2*r);
-    camera.setFar(dist + 2*r);
+    /*camera.setNear(dist - 2*r);
+    camera.setFar(dist + 2*r);*/
 }
 
 void cameraRotate(Camera & camera, Eigen::Vector3f center, Eigen::Vector3f axis, float angle)

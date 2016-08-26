@@ -4,11 +4,12 @@
 #include "mh/base/defs.h"
 #include "mh/base/imports.h"
 
-#include <GL/glew.h>
+//#include <GL/glew.h>
+#include "mh/ext/gl3w/gl3w.h"
 #include <GLFW/glfw3.h>
 
 #include "mh/ext/imgui/imgui.h"
-#include "mh/ext/imgui/imgui_impl_glfw.h"
+#include "mh/ext/imgui/imgui_impl_glfw_gl3.h"
 
 #include "mh/gpu/shader.h"
 
