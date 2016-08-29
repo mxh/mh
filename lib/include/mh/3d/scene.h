@@ -24,9 +24,7 @@ public:
     void                                        addMeshes            (const std::vector<std::shared_ptr<Mesh> > & meshes);
 
     const std::vector<std::shared_ptr<Mesh> > & getMeshes            (void) const { return m_meshes; }
-          std::vector<std::shared_ptr<Mesh> > & getMeshes            (void)       { return m_meshes; m_dirty = true;}
-
-    std::shared_ptr<BVH>                        getBVH               (void)       { return m_bvh; }
+          std::vector<std::shared_ptr<Mesh> > & getMeshes            (void)       { return m_meshes; }
 
     void                                        draw                 (std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera); 
 
@@ -35,7 +33,6 @@ public:
     Eigen::Vector3f                             getMin               (void) const;
     Eigen::Vector3f                             getMax               (void) const;
 
-    void                                        update               (bool force=false);
     void                                        centerToCenterOfMass (void);
 
     void                                        reset                (void);
@@ -46,12 +43,7 @@ private:
     // meshes
     std::vector<std::shared_ptr<Mesh> > m_meshes;
 
-    // bounding volume hierarchy
-    std::shared_ptr<BVH>                m_bvh;
-
     Eigen::Vector3f                     m_center;
-
-    bool                                m_dirty;
 
 }; // class Scene
 

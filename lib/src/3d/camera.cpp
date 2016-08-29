@@ -156,7 +156,7 @@ void setCameraLookatScene(Camera & camera, Scene & scene)
     std::transform(scene.getMeshes().begin(), scene.getMeshes().end(), radii.begin(),
         [&center, &camera] (const std::shared_ptr<Mesh> & x)
         {
-            return getFittingSphereRadius(applyTransform(x->getModelToWorld(), x->getVertData()), center);
+            return getFittingSphereRadius(applyTransform(transform_to_mtw(x->getTransform()), x->getVertData()), center);
         }
     );
     

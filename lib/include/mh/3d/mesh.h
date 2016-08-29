@@ -1,22 +1,17 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include <vector>
+
 #include "mh/base/defs.h"
 #include "mh/base/imports.h"
 
-#include <vector>
-
-//#include <GL/glew.h>
-#include "mh/ext/gl3w/gl3w.h"
-
-#include "eigen3/Eigen/Geometry"
-
-#include "mh/3d/bvh.h"
+#include "mh/3d/vertex.h"
 #include "mh/3d/face.h"
 #include "mh/3d/halfedge.h"
-#include "mh/3d/vertex.h"
-
-#include "mh/gpu/texture.h"
+#include "mh/3d/wedge.h"
+#include "mh/3d/material.h"
+#include "mh/3d/transform.h"
 
 namespace mh
 {
@@ -24,150 +19,67 @@ namespace mh
 class Mesh
 {
 public:
-    static constexpr int POSITION_LOCATION = 0;
-    static constexpr int NORMAL_LOCATION   = 1;
-    static constexpr int COLOR_LOCATION    = 2;
-    static constexpr int TEXTURE_LOCATION  = 3;
+    Mesh() {}
 
-public:
-                                                    //Mesh      (void) : m_idx(-1), m_position(Eigen::Vector3f::Zero()), m_VBOCreated(false), m_dirty(false) {}
-  
-                                                    Mesh      (const std::vector<Eigen::Vector3f> & vertData,
-                                                               const std::vector<Eigen::Vector3f> & normalData,
-                                                               const std::vector<Eigen::Vector3i> & faceData);
-                                                    Mesh      (const std::vector<Eigen::Vector3f> & vertData,
-                                                               const std::vector<Eigen::Vector3i> & faceData);
-                                                    Mesh      (const std::vector<Eigen::Vector3f> & vertData,
-                                                               const std::vector<float2>          & textureCoordsData,
-                                                               const std::vector<Eigen::Vector3i> & faceData);
-                                                    Mesh      (const std::vector<Eigen::Vector3f> & vertData,
-                                                               const std::vector<Eigen::Vector3f> & normalData,
-                                                               const std::vector<Eigen::Vector4f> & colorData,
-                                                               const std::vector<Eigen::Vector3i> & faceData);
-                                                    Mesh      (const Mesh& other);
+    const std::vector<std::shared_ptr<Vertex> >   & getVerts()     const { return m_verts; }
+          std::vector<std::shared_ptr<Vertex> >   & getVerts()           { dirty(); return m_verts; }
 
-    friend void                                     swap      (Mesh & first, Mesh & second);
-    Mesh &                                          operator= (      Mesh  other); // copy and swap
+    const std::vector<std::shared_ptr<Face> >     & getFaces()     const { return m_faces; }
+          std::vector<std::shared_ptr<Face> >     & getFaces()           { dirty(); return m_faces; }
 
-    const std::vector<std::shared_ptr<Vertex> > &   getVertices()    const {                    return m_verts; }
-          std::vector<std::shared_ptr<Vertex> > &   getVertices()          { m_dirty = true; m_minmax_dirty = true; return m_verts; }
+    const std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges() const { return m_halfedges; }
+          std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()       { dirty(); return m_halfedges; }
 
-    const std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()   const {                    return m_halfedges; }
-          std::vector<std::shared_ptr<HalfEdge> > & getHalfEdges()         { m_dirty = true; m_minmax_dirty = true; return m_halfedges; }
+    const std::vector<std::shared_ptr<Wedge> >    & getWedges()    const { return m_wedges; }
+          std::vector<std::shared_ptr<Wedge> >    & getWedges()          { dirty(); return m_wedges; }
 
-    const std::vector<std::shared_ptr<Face> > &     getFaces()       const {                    return m_faces; }
-          std::vector<std::shared_ptr<Face> > &     getFaces()             { m_dirty = true; m_minmax_dirty = true; return m_faces; }
+    const std::shared_ptr<Material>               & getMaterial()  const { return m_material; }
+          std::shared_ptr<Material>               & getMaterial()        { dirtyGL(); return m_material; }
 
-    const std::vector<Eigen::Vector3f> &            getVertData()    const {                    return m_vertData; }
-    const std::vector<Eigen::Vector3f> &            getNormalData()  const {                    return m_normalData; }
-    const std::vector<Eigen::Vector4f> &            getColorData()   const {                    return m_colorData; }
-    const std::vector<float2>          &            getTextureCoordsData() const {              return m_textureCoordsData; }
-    bool                                            hasTextureCoords() const { return m_hasTextureCoords; }
+    const Transform                               & getTransform() const { return m_transform; }
+          Transform                               & getTransform()       { return m_transform; }
+        
+          size_t                                    nVerts()       const { return m_verts.size(); }
+          size_t                                    nFaces()       const { return m_faces.size(); }
 
+          Eigen::Vector3f                           getMin()       const { updateMinMax(); return m_min; }
+          Eigen::Vector3f                           getMax()       const { updateMinMax(); return m_max; }
+          Eigen::Vector3f                           getCenter()    const { updateMinMax(); return (m_min + m_max) / 2.0f; }
+          
+          size_t                                    idx()          const { return m_idx; }
 
-    std::shared_ptr<BVH>                            getBVH()               { update();          return m_bvh; }
-
-    Eigen::Vector3f                                 getDiffuse()     const { return m_diffuse; }
-    void                                            setDiffuse(Eigen::Vector3f diffuse) { m_diffuse = diffuse; }
-
-    Eigen::Vector3f                                 getSpecular()    const { return m_specular; }
-    void                                            setSpecular(Eigen::Vector3f specular) { m_specular = specular; }
-
-    float                                           getShininess()   const { return m_shininess; }
-    void                                            setShininess(float shininess) { m_shininess = shininess; }
-
-    const Texture &                                 getTexture()     const { return *m_diffuse_texture; }
-    void                                            setTexture(std::shared_ptr<Texture> texture) { m_dirty = true; m_diffuse_texture = texture; }
-
-    std::size_t                                     idx             (void) const { return m_idx; }
-
-    std::vector<Eigen::Vector3i>                    getFVI          (void) const;
-    void                                            draw            (void) const;
-    void                                            createVBO       (void) const;
-    void                                            deleteVBO       (void) const;
-    void                                            update          (bool force=false) const;
-    void                                            updateMinMax    (void) const;
-
-    size_t                                          nVerts          (void) const { return m_vertData.size(); }
-    size_t                                          nFaces          (void) const { return m_faces.size(); }
-
-    Eigen::Vector3f                                 getMin          (void) const { return m_min; }
-    Eigen::Vector3f                                 getMax          (void) const { return m_max; }
-    Eigen::Vector3f                                 getCenter       (void) const;
-
-    Eigen::Vector3f                                 getPosition     (void) const { return m_position; }
-    void                                            setPosition     (Eigen::Vector3f position) { m_position = position; }
-
-    float                                           getScale        (void) const { return m_scale; }
-    void                                            setScale        (float scale) { m_scale = scale; }
-
-    Eigen::AngleAxisf                              getRotation     (void) const { return m_rotation; }
-    void                                            setRotation     (Eigen::AngleAxisf rotation) { m_rotation = rotation; }
-
-    Eigen::Affine3f                                 getModelToWorld (void) const;
-
+          void                                      draw()         const { updateGL(); m_gl_state.draw(); }
+    
 protected:
-    void                                            init            (void);
+    void dirty()   const { dirtyGL(); dirtyBB(); }
+    void dirtyGL() const { m_dirty_gl = true; }
+    void dirtyBB() const { m_dirty_bb = true; }
+
+    void updateMinMax() const;
+    void updateGL() const;
 
 private:
-    // index
-    std::size_t                             m_idx;
+    size_t                                  m_idx;
 
-    // raw data - not accessible directly through public interface
-    std::vector<Eigen::Vector3f>            m_vertData;
-    std::vector<Eigen::Vector3f>            m_normalData;
-    std::vector<Eigen::Vector4f>            m_colorData;
-    std::vector<float2>                     m_textureCoordsData;
-    std::vector<Eigen::Vector3i>            m_faceData;
-
-    // structures
     std::vector<std::shared_ptr<Vertex> >   m_verts;
-    std::vector<std::shared_ptr<HalfEdge> > m_halfedges;
     std::vector<std::shared_ptr<Face> >     m_faces;
+    std::vector<std::shared_ptr<HalfEdge> > m_halfedges;
+    std::vector<std::shared_ptr<Wedge> >    m_wedges;
 
-    // material
-    Eigen::Vector3f                         m_diffuse;
-    Eigen::Vector3f                         m_specular;
-    float                                   m_shininess;
+    std::shared_ptr<Material>               m_material;
 
-    // texture
-    std::shared_ptr<Texture>                m_diffuse_texture;
-    bool                                    m_hasTextureCoords;
+    Transform                               m_transform;
 
-    // relative position
-    Eigen::Vector3f                         m_position;
-
-    // relative scale
-    float                                   m_scale;
-
-    // relative rotation
-    Eigen::AngleAxisf                      m_rotation;
-
-    // bounding box
+    // cached variables & gl state
+    mutable bool                            m_dirtyBB;
     mutable Eigen::Vector3f                 m_min;
     mutable Eigen::Vector3f                 m_max;
 
-    // bounding volume hierarchy
-    mutable std::shared_ptr<BVH>                    m_bvh;
-
-    // state
-    mutable bool                                    m_VBOCreated;
-    mutable bool                                    m_dirty;
-    mutable bool                            m_minmax_dirty;
-
-    // GL
-    mutable GLuint                                  m_vaoID;
-    mutable GLuint                                  m_indexVboID;
-    mutable GLuint                                  m_posVboID;
-    mutable GLuint                                  m_normalVboID;
-    mutable GLuint                                  m_colorVboID;
-    mutable GLuint                                  m_textureVboID;
+    mutable bool                            m_dirtyGL;
+    mutable MeshGLState                     m_gl_state;
 
 }; // class Mesh
 
-std::shared_ptr<BVH> constructBVHFromMesh(const Mesh * mesh);
-std::shared_ptr<BVH> constructBVHFromMeshes(std::vector<std::shared_ptr<Mesh> > & meshes);
-
 } // namespace mh
 
-#endif /* MESH_H */
+#endif

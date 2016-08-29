@@ -5,9 +5,8 @@
 #include "mh/base/imports.h"
 
 #include "mh/3d/halfedge.h"
-#include "mh/3d/intersection.h"
-#include "mh/3d/ray.h"
 #include "mh/3d/vertex.h"
+#include "mh/3d/wedge.h"
 
 namespace mh
 {
@@ -21,21 +20,24 @@ public:
 
     EXPOSE_SHARED_PTR(HalfEdge, HalfEdge, m_halfedge)
 
-    int                           idx           (void)       const { return m_idx; }
+    int                           idx            (void)       const { return m_idx; }
 
-    std::shared_ptr<const Vertex> getVertex     (size_t idx) const;
-    std::shared_ptr<Vertex>       getVertex     (size_t idx);
-    Eigen::Vector3f               getEdge       (size_t idx) const;
-    Eigen::Vector3f               getFaceNormal (void)       const;
+    std::shared_ptr<const Vertex> getVertex      (size_t idx) const;
+    std::shared_ptr<Vertex>       getVertex      (size_t idx);
 
-    Intersection<Face>            intersect     (const Ray & ray, bool backfacing=false);
+    std::shared_ptr<Wedge>        getWedge       (size_t idx);
+    std::shared_ptr<const Wedge>  getWedge       (size_t idx) const;
+
+    Eigen::Vector3f               getEdge        (size_t idx) const;
+    Eigen::Vector3f               getFaceNormal  (void)       const;
 
 protected:
 
 private:
-    int                       m_idx; // index in mesh
+    int                                        m_idx; // index in mesh
 
-    std::shared_ptr<HalfEdge> m_halfedge;
+    std::shared_ptr<HalfEdge>                  m_halfedge;
+    std::vector<std::shared_ptr<Wedge> >       m_wedges;
 
 }; // class Face
 
