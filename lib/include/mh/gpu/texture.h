@@ -19,14 +19,16 @@ public:
     Texture (std::string filename);
     ~Texture();
 
-    void   setTextureFile (std::string filename);
+    void                setTextureFile(std::string filename);
+    const std::string & getTextureFile() const { return m_filename; }
     
     GLuint getTextureID   (void)                 const { return m_textureID; }
 
 protected:
 
 private:
-    GLuint m_textureID;
+    GLuint      m_textureID;
+    std::string m_filename;
 
 };
 

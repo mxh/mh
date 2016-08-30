@@ -19,20 +19,20 @@ namespace mh
 
 void MeshGLState::createVBO()
 {
-    glGenVertexArray(1, &m_vaoID);
+    glGenVertexArrays(1, &m_vaoID);
     glBindVertexArray(m_vaoID);
 
     MeshGLData meshGLData = getMeshGLData(m_mesh);
 
-    MH_GEN_ARRAY_BUF(m_posVboID, Eigen::Vector3f, m_mesh.nVerts(), &mesh_gl_data.vertData[0](0), GL_FLOAT, 3, POSITION_LOCATION);
-    MH_GEN_ARRAY_BUF(m_normalVboID, Eigen::Vector3f, m_mesh.nVerts(), &mesh_gl_data.normalData[0](0), GL_FLOAT, 3, NORMAL_LOCATION);
+    MH_GEN_ARRAY_BUF(m_posVboID, Eigen::Vector3f, m_mesh.nVerts(), &meshGLData.vertData[0](0), GL_FLOAT, 3, POSITION_LOCATION);
+    MH_GEN_ARRAY_BUF(m_normalVboID, Eigen::Vector3f, m_mesh.nVerts(), &meshGLData.normalData[0](0), GL_FLOAT, 3, NORMAL_LOCATION);
 
-    if (m_mesh.hasTextureCoords() && m_mesh.getMaterial().hasTexture())
+    if (m_mesh.hasTextureCoords() && m_mesh.getMaterial()->hasTexture())
     {
-        MH_GEN_ARRAY_BUF(m_textureVboID, float2, m_mesh.nVerts(), &mesh_gl_data.textureCoordsData[0][0], GL_FLOAT, 2, TEXTURE_LOCATION);
+        MH_GEN_ARRAY_BUF(m_textureVboID, float2, m_mesh.nVerts(), &meshGLData.textureCoordsData[0][0], GL_FLOAT, 2, TEXTURE_LOCATION);
     }
 
-    MH_GEN_ELEM_ARRAY_BUF(m_faceVboID, Eigen::Vector3i, m_mesh.nFaces(), &mesh_gl_data.faceData[0](0));
+    MH_GEN_ELEM_ARRAY_BUF(m_faceVboID, Eigen::Vector3i, m_mesh.nFaces(), &meshGLData.faceData[0](0));
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -43,12 +43,12 @@ void MeshGLState::deleteVBO()
 {
     if (!m_vboCreated) return;
 
-    glDeleteVertexArray(1, &m_vaoID);
-    glDeleteBuffers    (1, &m_faceVboID);
-    glDeleteBuffers    (1, &m_posVboID);
-    glDeleteBuffers    (1, &m_normalVboID);
+    glDeleteVertexArrays(1, &m_vaoID);
+    glDeleteBuffers     (1, &m_faceVboID);
+    glDeleteBuffers     (1, &m_posVboID);
+    glDeleteBuffers     (1, &m_normalVboID);
 
-    if (m_mesh.hasTextureCoords() && m_mesh.getMaterial().hasTexture())
+    if (m_mesh.hasTextureCoords() && m_mesh.getMaterial()->hasTexture())
     {
         glDeleteBuffers(1, &m_textureVboID); 
     }
@@ -68,6 +68,12 @@ MeshGLData getMeshGLData(Mesh & mesh)
     // all vertices are duplicated such that each vertex belongs to
     // one face only, resulting in nFaces() * 3 vertices
     meshGLData.vertData.resize(mesh.nFaces() * 3);
+    meshGLData.normalData.resize(mesh.nFaces() * 3);
+    meshGLData.faceData.resize(mesh.nFaces());
+    if (mesh.hasTextureCoords())
+    {
+        meshGLData.textureCoordsData.resize(mesh.nFaces() * 3);
+    }
 
     // iterate over mesh faces, generate separate vertices for each face
     for (size_t i = 0; i < mesh.nFaces(); ++i)
@@ -76,18 +82,20 @@ MeshGLData getMeshGLData(Mesh & mesh)
         meshGLData.vertData[i*3+1] = mesh.getFaces()[i]->getVertex(1)->getPosition();
         meshGLData.vertData[i*3+2] = mesh.getFaces()[i]->getVertex(2)->getPosition();
 
-        meshGLData.normalData[i*3+0] = mesh.getFaces()[i]->getVertex(0)->getNormal();
-        meshGLData.normalData[i*3+1] = mesh.getFaces()[i]->getVertex(1)->getNormal();
-        meshGLData.normalData[i*3+2] = mesh.getFaces()[i]->getVertex(2)->getNormal();
+        meshGLData.normalData[i*3+0] = mesh.getFaces()[i]->getWedges()[0]->getNormal();
+        meshGLData.normalData[i*3+1] = mesh.getFaces()[i]->getWedges()[1]->getNormal();
+        meshGLData.normalData[i*3+2] = mesh.getFaces()[i]->getWedges()[2]->getNormal();
 
         if (mesh.hasTextureCoords())
         {
-            meshGLData.textureCoordsData[i*3+0] = mesh.getFaces()[i]->getWedge(0)->getTextureCoords();
-            meshGLData.textureCoordsData[i*3+1] = mesh.getFaces()[i]->getWedge(1)->getTextureCoords();
-            meshGLData.textureCoordsData[i*3+2] = mesh.getFaces()[i]->getWedge(2)->getTextureCoords();
+            meshGLData.textureCoordsData[i*3+0] = mesh.getFaces()[i]->getWedges()[0]->getTextureCoords();
+            meshGLData.textureCoordsData[i*3+1] = mesh.getFaces()[i]->getWedges()[1]->getTextureCoords();
+            meshGLData.textureCoordsData[i*3+2] = mesh.getFaces()[i]->getWedges()[2]->getTextureCoords();
         }
 
-        meshGLData.faceData[i] = {i*3+0, i*3+1, i*3+2};
+        meshGLData.faceData[i] = {static_cast<int>(i)*3+0,
+                                  static_cast<int>(i)*3+1, 
+                                  static_cast<int>(i)*3+2};
     }
 
     return meshGLData;

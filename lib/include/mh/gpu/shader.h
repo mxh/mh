@@ -10,7 +10,7 @@
 #include "mh/ext/gl3w/gl3w.h"
 #include <GLFW/glfw3.h>
 
-#include "eigen3/Eigen/Geometry"
+#include "Eigen/Geometry"
 
 #define GLSL(version, shader)  std::string("#version " #version "\n" #shader)
 

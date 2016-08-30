@@ -16,8 +16,7 @@ class MeshGLState
 public:
     static constexpr int POSITION_LOCATION = 0;
     static constexpr int NORMAL_LOCATION   = 1;
-    static constexpr int COLOR_LOCATION    = 2;
-    static constexpr int TEXTURE_LOCATION  = 3;
+    static constexpr int TEXTURE_LOCATION  = 2;
 
     MeshGLState(Mesh & mesh) : m_mesh(mesh) {}
 

@@ -20,16 +20,16 @@ public:
 
     EXPOSE_SHARED_PTR(HalfEdge, HalfEdge, m_halfedge)
 
-    int                           idx            (void)       const { return m_idx; }
+    int                                          idx()                 const { return m_idx; }
 
-    std::shared_ptr<const Vertex> getVertex      (size_t idx) const;
-    std::shared_ptr<Vertex>       getVertex      (size_t idx);
+    std::shared_ptr<const Vertex>                getVertex(size_t idx) const;
+    std::shared_ptr<Vertex>                      getVertex(size_t idx);
 
-    std::shared_ptr<Wedge>        getWedge       (size_t idx);
-    std::shared_ptr<const Wedge>  getWedge       (size_t idx) const;
+    const std::vector<std::shared_ptr<Wedge> > & getWedges()           const { return m_wedges; }
+          std::vector<std::shared_ptr<Wedge> > & getWedges()                 { return m_wedges; }
 
-    Eigen::Vector3f               getEdge        (size_t idx) const;
-    Eigen::Vector3f               getFaceNormal  (void)       const;
+    Eigen::Vector3f               getEdge        (size_t idx)          const;
+    Eigen::Vector3f               getFaceNormal  (void)                const;
 
 protected:
 

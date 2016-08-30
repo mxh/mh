@@ -9,7 +9,7 @@
 //#include <GL/glew.h>
 #include "mh/ext/gl3w/gl3w.h"
 
-#include "eigen3/Eigen/Geometry"
+#include "Eigen/Geometry"
 
 #include "mh/3d/bvh.h"
 #include "mh/3d/face.h"

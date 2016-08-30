@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "eigen3/Eigen/Geometry"
+#include "Eigen/Geometry"
 
 #include "mh/3d/camera.h"
 #include "mh/3d/mesh.h"
@@ -147,26 +147,26 @@ void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f 
     }
 }
 
-void setCameraLookatScene(Camera & camera, Scene & scene)
-{
-    Eigen::Vector3f center = scene.getCenter();
-
-    std::vector<float> radii;
-    radii.resize(scene.getMeshes().size());
-    std::transform(scene.getMeshes().begin(), scene.getMeshes().end(), radii.begin(),
-        [&center, &camera] (const std::shared_ptr<Mesh> & x)
-        {
-            return getFittingSphereRadius(applyTransform(transform_to_mtw(x->getTransform()), x->getVertData()), center);
-        }
-    );
-    
-    float r = *std::max_element(radii.begin(), radii.end());
-    float dist = r / std::sin(0.5 * camera.getFOV() * M_PI / 180);
-
-    camera.setPosition(center - camera.getForward() * dist);
-    /*camera.setNear(dist - 2*r);
-    camera.setFar(dist + 2*r);*/
-}
+//void setCameraLookatScene(Camera & camera, Scene & scene)
+//{
+//    Eigen::Vector3f center = scene.getCenter();
+//
+//    std::vector<float> radii;
+//    radii.resize(scene.getMeshes().size());
+//    std::transform(scene.getMeshes().begin(), scene.getMeshes().end(), radii.begin(),
+//        [&center, &camera] (const std::shared_ptr<Mesh> & x)
+//        {
+//            return getFittingSphereRadius(applyTransform(transform_to_mtw(x->getTransform()), x->getVertData()), center);
+//        }
+//    );
+//    
+//    float r = *std::max_element(radii.begin(), radii.end());
+//    float dist = r / std::sin(0.5 * camera.getFOV() * M_PI / 180);
+//
+//    camera.setPosition(center - camera.getForward() * dist);
+//    /*camera.setNear(dist - 2*r);
+//    camera.setFar(dist + 2*r);*/
+//}
 
 void cameraRotate(Camera & camera, Eigen::Vector3f center, Eigen::Vector3f axis, float angle)
 {

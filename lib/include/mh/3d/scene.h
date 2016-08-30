@@ -4,7 +4,6 @@
 #include "mh/base/defs.h"
 #include "mh/base/imports.h"
 
-#include "mh/3d/bvh.h"
 #include "mh/3d/mesh.h"
 
 #include "mh/gpu/shader.h"

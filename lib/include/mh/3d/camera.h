@@ -9,7 +9,7 @@
 
 #include "mh/3d/scene.h"
 
-#include "eigen3/Eigen/Geometry"
+#include "Eigen/Geometry"
 
 namespace mh
 {
@@ -61,7 +61,7 @@ private:
 }; // class Camera
 
 void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f center);
-void setCameraLookatScene(Camera & camera, Scene & scene);
+//void setCameraLookatScene(Camera & camera, Scene & scene);
 
 void cameraRotate(Camera & camera, Eigen::Vector3f center, Eigen::Vector3f axis, float angle);
 void cameraYaw   (Camera & camera, Eigen::Vector3f center, float angle);

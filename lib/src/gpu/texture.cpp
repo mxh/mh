@@ -30,6 +30,7 @@ void Texture::setTextureFile(std::string filename)
     }   
 
     MH_ASSERT(m_textureID != 0); 
+    m_filename = filename;
 }
 
 } // namespace mh 
