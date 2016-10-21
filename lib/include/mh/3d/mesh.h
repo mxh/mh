@@ -2,6 +2,7 @@
 #define MESH_H
 
 #include <vector>
+#include <iostream>
 
 #include "mh/base/defs.h"
 #include "mh/base/imports.h"
@@ -37,9 +38,9 @@ public:
     const std::vector<std::shared_ptr<Wedge> >    & getWedges()        const { return m_wedges; }
           std::vector<std::shared_ptr<Wedge> >    & getWedges()              { dirty(); return m_wedges; }
 
-          void                                      setMaterial(std::shared_ptr<Material> material) { m_material = material; }
+          void                                      setMaterial(std::shared_ptr<Material> material) { dirtyGL(); m_material = material; }
     const std::shared_ptr<Material>               & getMaterial()      const { return m_material; }
-          std::shared_ptr<Material>               & getMaterial()            { dirtyGL(); return m_material; }
+          std::shared_ptr<Material>               & getMaterial()            { std::cout << "unconst material get" << std::endl; dirtyGL(); return m_material; }
 
     const Transform                               & getTransform()     const { return m_transform; }
           Transform                               & getTransform()           { return m_transform; }

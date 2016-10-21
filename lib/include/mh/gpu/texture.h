@@ -22,13 +22,15 @@ public:
     void                setTextureFile(std::string filename);
     const std::string & getTextureFile() const { return m_filename; }
     
-    GLuint getTextureID   (void)                 const { return m_textureID; }
+    GLuint getTextureID   (void)         const;
 
 protected:
+    void load() const;
 
 private:
-    GLuint      m_textureID;
-    std::string m_filename;
+    mutable bool   m_isLoaded;
+    mutable GLuint m_textureID;
+    std::string    m_filename;
 
 };
 

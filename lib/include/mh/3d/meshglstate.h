@@ -18,7 +18,8 @@ public:
     static constexpr int NORMAL_LOCATION   = 1;
     static constexpr int TEXTURE_LOCATION  = 2;
 
-    MeshGLState(Mesh & mesh) : m_mesh(mesh) {}
+    MeshGLState(Mesh & mesh) : m_mesh(mesh), m_vboCreated(false) {}
+    ~MeshGLState();
 
     void createVBO();
     void deleteVBO();

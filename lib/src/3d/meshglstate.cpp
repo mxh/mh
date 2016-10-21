@@ -17,6 +17,11 @@
 namespace mh
 {
 
+MeshGLState::~MeshGLState()
+{
+    deleteVBO();
+}
+
 void MeshGLState::createVBO()
 {
     glGenVertexArrays(1, &m_vaoID);
@@ -37,6 +42,8 @@ void MeshGLState::createVBO()
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    m_vboCreated = true;
 }
 
 void MeshGLState::deleteVBO()
@@ -52,6 +59,8 @@ void MeshGLState::deleteVBO()
     {
         glDeleteBuffers(1, &m_textureVboID); 
     }
+
+    m_vboCreated = false;
 }
 
 void MeshGLState::draw()
