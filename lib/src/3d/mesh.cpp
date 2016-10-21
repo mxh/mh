@@ -122,7 +122,7 @@ std::unique_ptr<Mesh> getSubMesh(const Mesh & mesh, const std::vector<size_t> & 
         face->getWedges()[1]->setNormal(oldFace->getWedges()[1]->getNormal());
         face->getWedges()[2]->setNormal(oldFace->getWedges()[2]->getNormal());
     }
-    submesh->setMaterial(mesh.getMaterial());
+    submesh->setMaterial(std::make_shared<Material>(*mesh.getMaterial()));
 
     return submesh;
 }
