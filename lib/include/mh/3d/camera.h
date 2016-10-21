@@ -20,7 +20,7 @@ public:
     Camera(float near, float far, float fov, float aspect, float speed, float sensitivity)
         : m_near(near), m_far(far), m_fov(fov), m_aspect(aspect),
           m_speed(speed), m_sensitivity(sensitivity), m_position(0.0f, 0.0f, 1.0f),
-          m_forward(0.0f, 0.0f, -1.0f), m_up(0.0f, 1.0f, 0.0f), m_dirty(true)
+          m_forward(0.0f, 0.0f, -1.0f), m_up(0.0f, 1.0f, 0.0f), m_use_separate_fovx(false), m_fovx(0.0), m_dirty(true)
     {}
 
     EXPOSE_DIRTY(float,           Near,        m_near);
@@ -32,6 +32,8 @@ public:
     EXPOSE_DIRTY(Eigen::Vector3f, Position,    m_position);
     EXPOSE_DIRTY(Eigen::Vector3f, Forward,     m_forward);
     EXPOSE_DIRTY(Eigen::Vector3f, Up,          m_up);
+    EXPOSE_DIRTY(float,           FOVX,        m_fovx);
+    EXPOSE_DIRTY(bool,            UseSeparateFOVX, m_use_separate_fovx);
 
     Eigen::Matrix4f getCameraToClip    (void);
     Eigen::Affine3f getWorldToCamera   (void);
@@ -55,6 +57,9 @@ private:
     Eigen::Vector3f m_position;
     Eigen::Vector3f m_forward;
     Eigen::Vector3f m_up;
+
+    bool            m_use_separate_fovx;
+    float           m_fovx;
 
     bool            m_dirty;
 

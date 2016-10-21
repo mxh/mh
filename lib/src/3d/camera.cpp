@@ -27,8 +27,28 @@ namespace
     {
         float range = std::tan(fov * 0.5f * M_PI / 180.0f) * near;
 
-        float Sx = (2.0f * near) / (range * aspect + range * aspect);
+        float Sx = near / (range * aspect);
         float Sy = near / range;
+        float Sz = -(far + near) / (far - near);
+
+        float Pz = -(2.0f * far * near) / (far - near);
+
+        Eigen::Matrix4f proj;
+        proj << Sx,   0.0f, 0.0f,  0.0f,
+                0.0f, Sy,   0.0f,  0.0f,
+                0.0f, 0.0f, Sz,    Pz,
+                0.0f, 0.0f, -1.0f, 0.0f;
+
+        return proj;
+    }
+
+    Eigen::Matrix4f computeProjectionMatrixSepFOV(float near, float far, float fovx, float fovy)
+    {
+        float range_x = std::tan(fovx * 0.5f * M_PI / 180.0f) * near;
+        float range_y = std::tan(fovy * 0.5f * M_PI / 180.0f) * near;
+
+        float Sx = near / range_x;
+        float Sy = near / range_y;
         float Sz = -(far + near) / (far - near);
 
         float Pz = -(2.0f * far * near) / (far - near);
@@ -71,13 +91,19 @@ void Camera::setCameraRotation(const Eigen::Matrix3f & M)
     m_worldToCamera.linear() = M;
     m_forward = -M.row(2);
     m_up = M.row(1);
-    m_dirty = false;
+    recomputeTransforms();
 }
 
 void Camera::recomputeTransforms(void)
 {
-    m_cameraToClip  = computeProjectionMatrix(m_near, m_far, m_fov, m_aspect);
+    if (m_use_separate_fovx)
+    {
+        m_cameraToClip  = computeProjectionMatrixSepFOV(m_near, m_far, m_fovx, m_fov);
+    } else {
+        m_cameraToClip  = computeProjectionMatrix(m_near, m_far, m_fov, m_aspect);
+    }
     m_worldToCamera = computeViewMatrix(m_forward, m_up, m_position);
+    m_dirty = false;
 }
 
 void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f center)
