@@ -23,6 +23,8 @@ class Mesh
 public:
     Mesh() : m_gl_state(*this) {}
 
+    Mesh(const Mesh & mesh);
+
           void                                      setName(std::string name) { m_name = std::move(name); }
     const std::string                             & getName()          const { return m_name; }
 
@@ -40,7 +42,7 @@ public:
 
           void                                      setMaterial(std::shared_ptr<Material> material) { dirtyGL(); m_material = material; }
     const std::shared_ptr<Material>               & getMaterial()      const { return m_material; }
-          std::shared_ptr<Material>               & getMaterial()            { std::cout << "unconst material get" << std::endl; dirtyGL(); return m_material; }
+          std::shared_ptr<Material>               & getMaterial()            { dirtyGL(); return m_material; }
 
     const Transform                               & getTransform()     const { return m_transform; }
           Transform                               & getTransform()           { return m_transform; }

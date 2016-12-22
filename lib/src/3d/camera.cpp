@@ -66,7 +66,7 @@ namespace
 namespace mh
 {
 
-Eigen::Matrix4f Camera::getCameraToClip(void)
+Eigen::Matrix4f Camera::getCameraToClip(void) const
 {
     if (m_dirty)
     {
@@ -76,7 +76,7 @@ Eigen::Matrix4f Camera::getCameraToClip(void)
     return m_cameraToClip;
 }
 
-Eigen::Affine3f Camera::getWorldToCamera(void)
+Eigen::Affine3f Camera::getWorldToCamera(void) const
 {
     if (m_dirty)
     {
@@ -94,7 +94,7 @@ void Camera::setCameraRotation(const Eigen::Matrix3f & M)
     recomputeTransforms();
 }
 
-void Camera::recomputeTransforms(void)
+void Camera::recomputeTransforms(void) const
 {
     if (m_use_separate_fovx)
     {

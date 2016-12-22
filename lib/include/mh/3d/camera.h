@@ -35,13 +35,13 @@ public:
     EXPOSE_DIRTY(float,           FOVX,        m_fovx);
     EXPOSE_DIRTY(bool,            UseSeparateFOVX, m_use_separate_fovx);
 
-    Eigen::Matrix4f getCameraToClip    (void);
-    Eigen::Affine3f getWorldToCamera   (void);
+    Eigen::Matrix4f getCameraToClip    (void) const;
+    Eigen::Affine3f getWorldToCamera   (void) const;
 
     void setCameraRotation(const Eigen::Matrix3f & M);
 
 protected:
-    void            recomputeTransforms(void);
+    void            recomputeTransforms(void) const;
 
 private:
     float           m_near;
@@ -51,8 +51,8 @@ private:
     float           m_speed;
     float           m_sensitivity;
 
-    Eigen::Matrix4f m_cameraToClip;
-    Eigen::Affine3f m_worldToCamera;
+    mutable Eigen::Matrix4f m_cameraToClip;
+    mutable Eigen::Affine3f m_worldToCamera;
 
     Eigen::Vector3f m_position;
     Eigen::Vector3f m_forward;
@@ -61,7 +61,7 @@ private:
     bool            m_use_separate_fovx;
     float           m_fovx;
 
-    bool            m_dirty;
+    mutable bool            m_dirty;
 
 }; // class Camera
 

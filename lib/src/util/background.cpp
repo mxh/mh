@@ -50,7 +50,8 @@ namespace mh
 
 Background::Background(const std::string & filename)
     : m_shader(compileBackgroundShader()),
-      m_texture(std::make_shared<Texture>(filename))
+      m_texture(std::make_shared<Texture>(filename)),
+      m_filename(filename)
 {
     static float triangles [] = {-1.0f, -1.0f, 1.0f,
                                  -1.0f,  1.0f, 1.0f,

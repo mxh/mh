@@ -31,5 +31,6 @@ private:
 }; // class Transform
 
 Eigen::Affine3f transform_to_mtw(const Transform & transform);
+Eigen::Affine3f mtw_to_transform(const Transform & transform);
 
 } // namespace mh
