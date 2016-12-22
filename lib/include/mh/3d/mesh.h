@@ -21,7 +21,7 @@ namespace mh
 class Mesh
 {
 public:
-    Mesh() : m_gl_state(*this) {}
+    Mesh() : m_dirtyGL(true), m_gl_state(*this) {}
 
     Mesh(const Mesh & mesh);
 

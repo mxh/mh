@@ -10,13 +10,14 @@ class Transform
 {
 public:
     Transform() : m_position(0.0f, 0.0f, 0.0f),
-                  m_scale(1.0f),
+                  m_scale({1.0f, 1.0f, 1.0f}),
                   m_rotation(Eigen::AngleAxisf(0.0f, Eigen::Vector3f::UnitX())) {}
     void              setPosition(Eigen::Vector3f position)         { m_position = position; }
     Eigen::Vector3f   getPosition()                           const { return m_position; }
 
-    void              setScale(float scale)                         { m_scale = scale; }
-    float             getScale()                              const { return m_scale;}
+    void              setScale(float scale)                         { m_scale = {scale, scale, scale}; }
+    void              setScale(const Eigen::Vector3f & scale)       { m_scale = scale; }
+    Eigen::Vector3f   getScale()                              const { return m_scale;}
 
     void              setRotation(Eigen::AngleAxisf rotation)       { m_rotation = rotation;}
     Eigen::AngleAxisf getRotation()                           const { return m_rotation; }
@@ -25,7 +26,7 @@ protected:
 
 private:
     Eigen::Vector3f   m_position;
-    float             m_scale;
+    Eigen::Vector3f   m_scale;
     Eigen::AngleAxisf m_rotation;
 
 }; // class Transform

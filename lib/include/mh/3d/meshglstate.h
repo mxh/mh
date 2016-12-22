@@ -19,6 +19,9 @@ public:
     static constexpr int TEXTURE_LOCATION  = 2;
 
     MeshGLState(Mesh & mesh) : m_mesh(mesh), m_vboCreated(false) {}
+    MeshGLState(MeshGLState & rhs)
+        : m_mesh(rhs.m_mesh)
+        , m_vboCreated(false) {}
     ~MeshGLState();
 
     void createVBO();
@@ -26,12 +29,15 @@ public:
 
     void draw();
 
+    Mesh & mesh() { return m_mesh; }
+
 protected:
 
 private:
     Mesh & m_mesh;
 
     bool   m_vboCreated;
+    bool   m_hasTexture;
 
     GLuint m_vaoID;
     GLuint m_faceVboID;

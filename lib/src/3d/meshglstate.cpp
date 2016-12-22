@@ -35,6 +35,7 @@ void MeshGLState::createVBO()
     if (m_mesh.hasTextureCoords() && m_mesh.getMaterial()->hasTexture())
     {
         MH_GEN_ARRAY_BUF(m_textureVboID, float2, m_mesh.nVerts(), &meshGLData.textureCoordsData[0][0], GL_FLOAT, 2, TEXTURE_LOCATION);
+        m_hasTexture = true;
     }
 
     MH_GEN_ELEM_ARRAY_BUF(m_faceVboID, Eigen::Vector3i, m_mesh.nFaces(), &meshGLData.faceData[0](0));
@@ -55,7 +56,7 @@ void MeshGLState::deleteVBO()
     glDeleteBuffers     (1, &m_posVboID);
     glDeleteBuffers     (1, &m_normalVboID);
 
-    if (m_mesh.hasTextureCoords() && m_mesh.getMaterial()->hasTexture())
+    if (m_hasTexture)
     {
         glDeleteBuffers(1, &m_textureVboID); 
     }
