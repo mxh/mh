@@ -33,6 +33,7 @@ inline std::string saveFileDialog(const std::string & filters)
     }
 
     std::string path(cpath);
+    std::cout << path << std::endl;
     free(cpath);
 
     return path;

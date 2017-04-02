@@ -17,7 +17,12 @@ namespace mh
 class Camera
 {
 public:
-    Camera(float near, float far, float fov, float aspect, float speed, float sensitivity)
+    Camera(float near = 0.01f,
+           float far = 100.0f,
+           float fov = 45.0f,
+           float aspect = 16.0/9.0,
+           float speed = 0.01f,
+           float sensitivity = 1.0 / 1000.0)
         : m_near(near), m_far(far), m_fov(fov), m_aspect(aspect),
           m_speed(speed), m_sensitivity(sensitivity), m_position(0.0f, 0.0f, 1.0f),
           m_forward(0.0f, 0.0f, -1.0f), m_up(0.0f, 1.0f, 0.0f), m_use_separate_fovx(false), m_fovx(0.0), m_dirty(true)
@@ -26,7 +31,9 @@ public:
     EXPOSE_DIRTY(float,           Near,        m_near);
     EXPOSE_DIRTY(float,           Far,         m_far);
     EXPOSE_DIRTY(float,           FOV,         m_fov);
-    EXPOSE_DIRTY(float,           Aspect,      m_aspect);
+    const float & getAspect() const { return m_aspect; }
+    void setAspect(const float & aspect) { m_aspect = aspect; std::cout << "setting aspect to " << m_aspect << std::endl; }
+    //EXPOSE_DIRTY(float,           Aspect,      m_aspect);
     EXPOSE_DIRTY(float,           Speed,       m_speed);
     EXPOSE_DIRTY(float,           Sensitivity, m_sensitivity);
     EXPOSE_DIRTY(Eigen::Vector3f, Position,    m_position);

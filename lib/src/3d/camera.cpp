@@ -20,6 +20,8 @@ namespace
         rot.col(1) = orthogonalUp;
         rot.col(2) = -forward;
 
+        Eigen::Affine3f t = Eigen::Affine3f(Eigen::Translation3f(-rot.transpose() * position));
+
         return Eigen::Translation3f(-rot.transpose() * position) * rot.transpose();
     }
 

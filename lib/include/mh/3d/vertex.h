@@ -16,9 +16,11 @@ public:
     Vertex(Eigen::Vector3f position,
            int idx)
     : m_position(position),
+      m_color(0.0f, 0.0f, 0.0f),
       m_idx(idx) {}
 
     EXPOSE            (Eigen::Vector3f, Position,      m_position)
+    EXPOSE            (Eigen::Vector3f, Color,         m_color)
 
     EXPOSE_SHARED_PTR (HalfEdge,        HalfEdge, m_halfedge)
 
@@ -32,6 +34,7 @@ protected:
 
 private:
     Eigen::Vector3f                      m_position;
+    Eigen::Vector3f                      m_color;
 
     int                                  m_idx; // index in mesh
 

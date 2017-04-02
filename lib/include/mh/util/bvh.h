@@ -61,7 +61,7 @@ std::unique_ptr<BVH> constructBVHFromSet(std::vector<std::unique_ptr<BVH> > & bv
 bool aabbIntersect(const BVH & a, const BVH & b);
 bool intersect_face(const Face * a, const Face * b,
     const Eigen::Affine3f & a_transform=Eigen::Affine3f::Identity(), const Eigen::Affine3f & b_transform=Eigen::Affine3f::Identity());
-bool intersect_bvh(const BVH * a, const BVH * b);
+bool intersect_bvh(const BVH * a, const BVH * b, const Eigen::Affine3f & a_transform=Eigen::Affine3f::Identity(), const Eigen::Affine3f & b_transform=Eigen::Affine3f::Identity());
 
 } // namespace mh
 

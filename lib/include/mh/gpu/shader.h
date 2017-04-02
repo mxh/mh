@@ -56,6 +56,7 @@ public:
 
     EXPOSE_UNIFORM_SETTER_BUILTIN (float, f);
     EXPOSE_UNIFORM_SETTER_BUILTIN (int, i);
+    EXPOSE_UNIFORM_SETTER_BUILTIN (unsigned int, ui);
 
     bool vertexShader   (const std::string & code);
     bool fragmentShader (const std::string & code);

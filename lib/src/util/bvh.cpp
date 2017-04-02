@@ -105,13 +105,13 @@ bool intersect_face(const Face * a, const Face * b, const Eigen::Affine3f & a_tr
     return face_intersection;
 }
 
-bool intersect_bvh(const BVH * a, const BVH * b)
+bool intersect_bvh(const BVH * a, const BVH * b, const Eigen::Affine3f & a_transform, const Eigen::Affine3f & b_transform)
 {
     if (!aabbIntersect(*a, *b)) return false;
 
-    if (a->isLeaf() && b->isLeaf()) return intersect_face(a->getFace(), b->getFace());
-    if (a->isLeaf()) return intersect_bvh(a, b->getLeft()) || intersect_bvh(a, b->getRight());
-    if (b->isLeaf()) return intersect_bvh(a->getLeft(), b) || intersect_bvh(a->getRight(), b);
+    if (a->isLeaf() && b->isLeaf()) return intersect_face(a->getFace(), b->getFace(), a_transform, b_transform);
+    if (a->isLeaf()) return intersect_bvh(a, b->getLeft(), a_transform, b_transform) || intersect_bvh(a, b->getRight(), a_transform, b_transform);
+    if (b->isLeaf()) return intersect_bvh(a->getLeft(), b, a_transform, b_transform) || intersect_bvh(a->getRight(), b, a_transform, b_transform);
 
     bool a_left_b_left_aabb_intersection   = aabbIntersect(*a->getLeft(),  *b->getLeft());
     bool a_right_b_left_aabb_intersection  = aabbIntersect(*a->getRight(), *b->getLeft());
@@ -119,13 +119,13 @@ bool intersect_bvh(const BVH * a, const BVH * b)
     bool a_right_b_right_aabb_intersection = aabbIntersect(*a->getRight(), *b->getRight());
 
     bool intersection = false;
-    if (a_left_b_left_aabb_intersection)   intersection |= intersect_bvh(a->getLeft(),  b->getLeft());
+    if (a_left_b_left_aabb_intersection)   intersection |= intersect_bvh(a->getLeft(),  b->getLeft(), a_transform, b_transform);
     if (intersection) return true;
-    if (a_right_b_left_aabb_intersection)  intersection |= intersect_bvh(a->getRight(), b->getLeft());
+    if (a_right_b_left_aabb_intersection)  intersection |= intersect_bvh(a->getRight(), b->getLeft(), a_transform, b_transform);
     if (intersection) return true;
-    if (a_left_b_right_aabb_intersection)  intersection |= intersect_bvh(a->getLeft(),  b->getRight());
+    if (a_left_b_right_aabb_intersection)  intersection |= intersect_bvh(a->getLeft(),  b->getRight(), a_transform, b_transform);
     if (intersection) return true;
-    if (a_right_b_right_aabb_intersection) intersection |= intersect_bvh(a->getRight(), b->getRight());
+    if (a_right_b_right_aabb_intersection) intersection |= intersect_bvh(a->getRight(), b->getRight(), a_transform, b_transform);
     return intersection;
 }
 

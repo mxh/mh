@@ -3,10 +3,10 @@
 
 #define printGLError() \
 { \
-/*    GLenum latestGLerr; \
+    GLenum latestGLerr; \
     while ( ( latestGLerr = glGetError() ) != GL_NO_ERROR) { \
         std::cerr << __FILE__ << ":" << __LINE__ << " " << latestGLerr << std::endl; \
-    }*/ \
+    } \
 }
 
 #endif

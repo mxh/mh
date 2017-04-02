@@ -14,6 +14,7 @@
 #include "mh/3d/material.h"
 #include "mh/3d/transform.h"
 #include "mh/3d/meshglstate.h"
+#include "mh/3d/pointcloudglstate.h"
 
 namespace mh
 {
@@ -21,7 +22,7 @@ namespace mh
 class Mesh
 {
 public:
-    Mesh() : m_dirtyGL(true), m_gl_state(*this) {}
+    Mesh(size_t idx=0) : m_idx(idx), m_dirtyGL(true), m_gl_state(*this), m_pointcloud_gl_state(*this) {}
 
     Mesh(const Mesh & mesh);
 
@@ -57,9 +58,11 @@ public:
           Eigen::Vector3f                           getMax()           const { updateMinMax(); return m_max; }
           Eigen::Vector3f                           getCenter()        const { updateMinMax(); return (m_min + m_max) / 2.0f; }
           
+          void                                      setIdx(size_t idx)       { m_idx = idx; }
           size_t                                    idx()              const { return m_idx; }
 
           void                                      draw()             const { updateGL(); m_gl_state.draw(); }
+          void                                      draw_cloud()       const { updateGL(); m_pointcloud_gl_state.draw(); }
     
 protected:
     void dirty()   const { dirtyGL(); dirtyBB(); }
@@ -90,6 +93,7 @@ private:
 
     mutable bool                            m_dirtyGL;
     mutable MeshGLState                     m_gl_state;
+    mutable PointcloudGLState               m_pointcloud_gl_state;
 
 }; // class Mesh
 

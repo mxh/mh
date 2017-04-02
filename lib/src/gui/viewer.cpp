@@ -11,7 +11,6 @@ namespace mh
 
 int Viewer::baseInit(void)
 {
-    //printGLError();
     //// GLFW setup
     glfwSetErrorCallback(glfwErrorCallback);
     if (!glfwInit())
@@ -19,37 +18,25 @@ int Viewer::baseInit(void)
         std::cerr << "Could not initialize GLFW." << std::endl;
         return 1;
     }
-    printGLError();
     
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, 4);
     m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), NULL, NULL);
-    printGLError();
 
     glfwMakeContextCurrent(m_window);
-    printGLError();
     gl3wInit();
 
     glfwSwapInterval(1);
     printGLError();
 
-    /*glewExperimental = GL_TRUE;
-
-    //// GLEW setup
-    GLenum glewError = glewInit();
-    if (GLEW_OK != glewError)
-    {
-        std::cerr << "Could not initialize GLEW." << std::endl;
-        return 1;
-    }*/
-
-    //// Imgui setup
-    /*m_imguiState = (void *) malloc(ImGui::GetInternalStateSize());
-    ImGui::SetInternalState(m_imguiState, true);*/
     ImGui_ImplGlfwGL3_Init(m_window, true);
     printGLError();
+
+    glfwSetMouseButtonCallback(m_window, &GLFWMouseCallbackManager::mouseButtonCallback);
+    glfwSetCursorPosCallback(m_window, &GLFWMouseCallbackManager::mouseMoveCallback);
+    GLFWMouseCallbackManager::getInstance().setMouseCallbackConfig(&m_mouseCallbackConfig);
 
     return 0;
 }
@@ -57,10 +44,6 @@ int Viewer::baseInit(void)
 void Viewer::makeCurrent(void)
 {
     glfwMakeContextCurrent(m_window);
-    /*ImGui::SetInternalState(m_imguiState, false);
-    ImGui_ImplGlfwGL3_Init(m_window, true);
-    ImGui_ImplGlfwGL3_InvalidateDeviceObjects();
-    ImGui_ImplGlfwGL3_CreateDeviceObjects();*/
 }
 
 void Viewer::pollSize(void)

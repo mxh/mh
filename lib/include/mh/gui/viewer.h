@@ -11,6 +11,8 @@
 #include "mh/ext/imgui/imgui.h"
 #include "mh/ext/imgui/imgui_impl_glfw_gl3.h"
 
+#include "mh/gui/mouse_callback.h"
+
 #include "mh/gpu/shader.h"
 
 namespace mh
@@ -65,21 +67,26 @@ public:
     int          getHeight     (void)             const
     { return m_height; }
 
+          MouseCallbackConfig & getMouseCallbackConfig()       { return m_mouseCallbackConfig; }
+    const MouseCallbackConfig & getMouseCallbackConfig() const { return m_mouseCallbackConfig; }
+
 protected:
-    void         pollSize();
+    void                pollSize();
 
-    GLFWwindow * m_window;
+    GLFWwindow *        m_window;
 
-    int          m_width;
-    int          m_height;
+    int                 m_width;
+    int                 m_height;
 
-    std::string  m_title;
+    std::string         m_title;
 
-    ShaderMap    m_shaders;
+    ShaderMap           m_shaders;
 
-    bool         m_shouldClose;
+    bool                m_shouldClose;
 
-    void *       m_imguiState;
+    MouseCallbackConfig m_mouseCallbackConfig;
+
+    void *              m_imguiState;
 
 private:
 

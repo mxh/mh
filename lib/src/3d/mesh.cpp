@@ -10,8 +10,9 @@
     { \
         vert_##IDX = m_verts[vert_##IDX##_it->second]; \
     } else { \
-        vert_##IDX = std::make_shared<Vertex>(mesh.getVerts()[vert_##IDX##_idx]->getPosition(), m_verts.size()); \
+        vert_##IDX = std::make_shared<Vertex>(mesh.getVerts()[vert_##IDX##_idx]->getPosition(), mesh.getVerts()[vert_##IDX##_idx]->idx()); \
         m_verts.push_back(vert_##IDX); \
+        vert_idx_map[vert_##IDX##_idx] = m_verts.size() - 1; \
     }
 
 #define COPY_VERTEX_SUBMESH(IDX) \
@@ -23,6 +24,7 @@
     } else { \
         vert_##IDX = std::make_shared<Vertex>(mesh.getVerts()[vert_##IDX##_idx]->getPosition(), submesh->getVerts().size()); \
         submesh->getVerts().push_back(vert_##IDX); \
+        vert_idx_map[vert_##IDX##_idx] = submesh->getVerts().size() - 1; \
     }
 
 namespace mh
@@ -32,7 +34,8 @@ Mesh::Mesh(const Mesh & mesh)
     : m_transform(mesh.m_transform),
       m_dirtyBB(true),
       m_dirtyGL(true),
-      m_gl_state(*this)
+      m_gl_state(*this),
+      m_pointcloud_gl_state(*this)
 {
     std::map<size_t, size_t> vert_idx_map;
     for (size_t i = 0; i < mesh.m_faces.size(); ++i)
@@ -121,6 +124,8 @@ void Mesh::updateGL() const
 
     m_gl_state.deleteVBO();
     m_gl_state.createVBO();
+    m_pointcloud_gl_state.deleteVBO();
+    m_pointcloud_gl_state.createVBO();
 
     m_dirtyGL = false;
 }
