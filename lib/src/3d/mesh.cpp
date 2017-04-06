@@ -209,4 +209,21 @@ std::unique_ptr<Mesh> getSubMesh(const Mesh & mesh, const std::vector<size_t> & 
     return submesh;
 }
 
+void recomputeNormalsMesh(Mesh & mesh)
+{
+    for (size_t i = 0; i < mesh.getFaces().size(); ++i)
+    {
+        auto vertex_0 = mesh.getFaces()[i]->getVertex(0);
+        auto vertex_1 = mesh.getFaces()[i]->getVertex(1);
+        auto vertex_2 = mesh.getFaces()[i]->getVertex(2);
+
+        Eigen::Vector3f normal = (vertex_1->getPosition() - vertex_0->getPosition()).cross(
+                                 (vertex_2->getPosition() - vertex_0->getPosition()));
+
+        mesh.getFaces()[i]->getWedges()[0]->setNormal(normal);
+        mesh.getFaces()[i]->getWedges()[1]->setNormal(normal);
+        mesh.getFaces()[i]->getWedges()[2]->setNormal(normal);
+    }
+}
+
 } // namespace mh

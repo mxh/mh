@@ -144,35 +144,35 @@ std::vector<std::shared_ptr<Mesh> > loadMeshesFromOBJ(const std::string & path)
                 mesh->getWedges().push_back(face->getWedges()[1]);
                 mesh->getWedges().push_back(face->getWedges()[2]);
 
-                if (vert_0_idx.texcoord_index > 0)
+                if (vert_0_idx.texcoord_index >= 0)
                 {
                     face->getWedges()[0]->setTextureCoords(makeFloat2(attrib.texcoords[2 * vert_0_idx.texcoord_index + 0],
                                                                       attrib.texcoords[2 * vert_0_idx.texcoord_index + 1]));
                 }
-                if (vert_1_idx.texcoord_index > 0)
+                if (vert_1_idx.texcoord_index >= 0)
                 {
                     face->getWedges()[1]->setTextureCoords(makeFloat2(attrib.texcoords[2 * vert_1_idx.texcoord_index + 0],
                                                                       attrib.texcoords[2 * vert_1_idx.texcoord_index + 1]));
                 }
-                if (vert_2_idx.texcoord_index > 0)
+                if (vert_2_idx.texcoord_index >= 0)
                 {
                     face->getWedges()[2]->setTextureCoords(makeFloat2(attrib.texcoords[2 * vert_2_idx.texcoord_index + 0],
                                                                       attrib.texcoords[2 * vert_2_idx.texcoord_index + 1]));
                 }
 
-                if (vert_0_idx.normal_index > 0)
+                if (vert_0_idx.normal_index >= 0)
                 {
                     face->getWedges()[0]->setNormal(Eigen::Vector3f(attrib.normals[3 * vert_0_idx.normal_index + 0],
                                                                     attrib.normals[3 * vert_0_idx.normal_index + 1],
                                                                     attrib.normals[3 * vert_0_idx.normal_index + 2]));
                 }
-                if (vert_1_idx.normal_index > 0)
+                if (vert_1_idx.normal_index >= 0)
                 {
                     face->getWedges()[1]->setNormal(Eigen::Vector3f(attrib.normals[3 * vert_1_idx.normal_index + 0],
                                                                     attrib.normals[3 * vert_1_idx.normal_index + 1],
                                                                     attrib.normals[3 * vert_1_idx.normal_index + 2]));
                 }
-                if (vert_2_idx.normal_index > 0)
+                if (vert_2_idx.normal_index >= 0)
                 {
                     face->getWedges()[2]->setNormal(Eigen::Vector3f(attrib.normals[3 * vert_2_idx.normal_index + 0],
                                                                     attrib.normals[3 * vert_2_idx.normal_index + 1],

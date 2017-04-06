@@ -99,6 +99,7 @@ private:
 
 std::vector<Eigen::Vector3i> meshToFVI(const Mesh & mesh);
 std::unique_ptr<Mesh> getSubMesh(const Mesh & mesh, const std::vector<size_t> & faceIndices);
+void recomputeNormalsMesh(Mesh & mesh);
 
 } // namespace mh
 

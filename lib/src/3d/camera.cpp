@@ -141,7 +141,7 @@ void updateCameraWithImgui(Camera & camera, const ImGuiIO & io, Eigen::Vector3f 
 
     camera.setPosition(camera.getPosition() + position_delta);
 
-    if (io.MouseWheel != 0)
+    if (io.MouseWheel != 0 && !ImGui::IsMouseHoveringAnyWindow())
     {
         camera.setFOV(camera.getFOV() + (io.MouseWheel * MH_DEFAULT_ZOOM_SPEED));
     }
