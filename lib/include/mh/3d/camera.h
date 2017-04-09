@@ -32,7 +32,7 @@ public:
     EXPOSE_DIRTY(float,           Far,         m_far);
     EXPOSE_DIRTY(float,           FOV,         m_fov);
     const float & getAspect() const { return m_aspect; }
-    void setAspect(const float & aspect) { m_aspect = aspect; std::cout << "setting aspect to " << m_aspect << std::endl; }
+    void setAspect(const float & aspect) { m_aspect = aspect; }
     //EXPOSE_DIRTY(float,           Aspect,      m_aspect);
     EXPOSE_DIRTY(float,           Speed,       m_speed);
     EXPOSE_DIRTY(float,           Sensitivity, m_sensitivity);

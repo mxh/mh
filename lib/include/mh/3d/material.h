@@ -33,7 +33,7 @@ public:
     void                setShininess(float shininess)               { m_shininess = shininess; }
     float               getShininess()                        const { return m_shininess; }
 
-    void                           setDiffuseTexture(std::shared_ptr<Texture> texture) { std::cout << "setting diffuse texture to " << texture->getTextureFile() << std::endl; m_diffuse_texture = texture; }
+    void                           setDiffuseTexture(std::shared_ptr<Texture> texture) { m_diffuse_texture = texture; }
     std::shared_ptr<const Texture> getDiffuseTexture() const                           { return m_diffuse_texture; }
     //std::shared_ptr<Texture>       getDiffuseTexture()                                 { return m_diffuse_texture; }
 

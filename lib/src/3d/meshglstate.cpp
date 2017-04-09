@@ -37,10 +37,13 @@ void MeshGLState::createVBO()
 
     MeshGLData meshGLData = getMeshGLData(m_mesh);
 
-    MH_GEN_ARRAY_BUF(m_posVboID,    Eigen::Vector3f, m_mesh.nFaces() * 3, &meshGLData.vertData[0](0),   GL_FLOAT,          3, POSITION_LOCATION);
-    MH_GEN_ARRAY_BUF(m_normalVboID, Eigen::Vector3f, m_mesh.nFaces() * 3, &meshGLData.normalData[0](0), GL_FLOAT,          3, NORMAL_LOCATION);
-    MH_GEN_ARRAY_BUF(m_colorVboID,  Eigen::Vector3f, m_mesh.nFaces() * 3, &meshGLData.colorData[0](0),  GL_FLOAT,          3, COLOR_LOCATION);
-    MH_GEN_ARRAY_BUF_INT(m_indexVboID,  unsigned int,    m_mesh.nFaces() * 3, &meshGLData.indexData[0],     GL_UNSIGNED_INT,   1, INDEX_LOCATION);
+    MH_GEN_ARRAY_BUF     (m_posVboID,        Eigen::Vector3f, m_mesh.nFaces() * 3, &meshGLData.vertData[0](0),      GL_FLOAT,        3, POSITION_LOCATION);
+    MH_GEN_ARRAY_BUF     (m_normalVboID,     Eigen::Vector3f, m_mesh.nFaces() * 3, &meshGLData.normalData[0](0),    GL_FLOAT,        3, NORMAL_LOCATION);
+    MH_GEN_ARRAY_BUF     (m_colorVboID,      Eigen::Vector3f, m_mesh.nFaces() * 3, &meshGLData.colorData[0](0),     GL_FLOAT,        3, COLOR_LOCATION);
+    MH_GEN_ARRAY_BUF_INT (m_indexVboID,      unsigned int,    m_mesh.nFaces() * 3, &meshGLData.indexData[0],        GL_UNSIGNED_INT, 1, INDEX_LOCATION);
+
+    MH_GEN_ARRAY_BUF_INT (m_customIntVboID,  int,             m_mesh.nFaces() * 3, &meshGLData.customIntData[0],    GL_UNSIGNED_INT, 1, CUSTOM_INT_LOCATION);
+    MH_GEN_ARRAY_BUF     (m_customVecVboID,  Eigen::Vector3f, m_mesh.nFaces() * 3, &meshGLData.customVecData[0](0), GL_FLOAT,        3, CUSTOM_VEC_LOCATION);
 
     if (m_mesh.hasTextureCoords() && m_mesh.getMaterial()->hasTexture())
     {
@@ -67,6 +70,8 @@ void MeshGLState::deleteVBO()
     glDeleteBuffers     (1, &m_normalVboID);
     glDeleteBuffers     (1, &m_colorVboID);
     glDeleteBuffers     (1, &m_indexVboID);
+    glDeleteBuffers     (1, &m_customIntVboID);
+    glDeleteBuffers     (1, &m_customVecVboID);
 
     if (m_hasTexture)
     {
@@ -93,6 +98,8 @@ MeshGLData getMeshGLData(Mesh & mesh)
     meshGLData.normalData.resize(mesh.nFaces() * 3);
     meshGLData.colorData.resize(mesh.nFaces() * 3);
     meshGLData.indexData.resize(mesh.nFaces() * 3);
+    meshGLData.customIntData.resize(mesh.nFaces() * 3);
+    meshGLData.customVecData.resize(mesh.nFaces() * 3);
     meshGLData.faceData.resize(mesh.nFaces());
     if (mesh.hasTextureCoords())
     {
@@ -117,6 +124,14 @@ MeshGLData getMeshGLData(Mesh & mesh)
         meshGLData.indexData[i*3+0] = mesh.getFaces()[i]->getVertex(0)->idx();
         meshGLData.indexData[i*3+1] = mesh.getFaces()[i]->getVertex(1)->idx();
         meshGLData.indexData[i*3+2] = mesh.getFaces()[i]->getVertex(2)->idx();
+
+        meshGLData.customIntData[i*3+0] = mesh.getFaces()[i]->getVertex(0)->getCustomInt();
+        meshGLData.customIntData[i*3+1] = mesh.getFaces()[i]->getVertex(1)->getCustomInt();
+        meshGLData.customIntData[i*3+2] = mesh.getFaces()[i]->getVertex(2)->getCustomInt();
+
+        meshGLData.customVecData[i*3+0] = mesh.getFaces()[i]->getVertex(0)->getCustomVec();
+        meshGLData.customVecData[i*3+1] = mesh.getFaces()[i]->getVertex(1)->getCustomVec();
+        meshGLData.customVecData[i*3+2] = mesh.getFaces()[i]->getVertex(2)->getCustomVec();
 
         if (mesh.hasTextureCoords())
         {

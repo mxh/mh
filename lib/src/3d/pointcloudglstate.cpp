@@ -38,6 +38,9 @@ void PointcloudGLState::createVBO()
     MH_GEN_ARRAY_BUF(m_colorVboID,      Eigen::Vector3f, m_pointcloud.nVerts(), &pointcloudGLData.colorData[0](0),  GL_FLOAT,          3, COLOR_LOCATION);
     MH_GEN_ARRAY_BUF_INT(m_indexVboID,  unsigned int,    m_pointcloud.nVerts(), &pointcloudGLData.indexData[0],     GL_UNSIGNED_INT,   1, INDEX_LOCATION);
 
+    MH_GEN_ARRAY_BUF_INT (m_customIntVboID,  int,             m_pointcloud.nFaces() * 3, &pointcloudGLData.customIntData[0],    GL_UNSIGNED_INT, 1, CUSTOM_INT_LOCATION);
+    MH_GEN_ARRAY_BUF     (m_customVecVboID,  Eigen::Vector3f, m_pointcloud.nFaces() * 3, &pointcloudGLData.customVecData[0](0), GL_FLOAT,        3, CUSTOM_VEC_LOCATION);
+
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -52,6 +55,8 @@ void PointcloudGLState::deleteVBO()
     glDeleteBuffers     (1, &m_posVboID);
     glDeleteBuffers     (1, &m_colorVboID);
     glDeleteBuffers     (1, &m_indexVboID);
+    glDeleteBuffers     (1, &m_customIntVboID);
+    glDeleteBuffers     (1, &m_customVecVboID);
 
     m_vboCreated = false;
 }
@@ -70,12 +75,16 @@ PointcloudGLData getPointcloudGLData(Mesh & pointcloud)
     pointcloudGLData.vertData.resize(pointcloud.nVerts());
     pointcloudGLData.colorData.resize(pointcloud.nVerts());
     pointcloudGLData.indexData.resize(pointcloud.nVerts());
+    pointcloudGLData.customIntData.resize(pointcloud.nFaces() * 3);
+    pointcloudGLData.customVecData.resize(pointcloud.nFaces() * 3);
 
     for (size_t i = 0; i < pointcloud.nVerts(); ++i)
     {
         pointcloudGLData.vertData[i]  = pointcloud.getVerts()[i]->getPosition();
         pointcloudGLData.colorData[i] = pointcloud.getVerts()[i]->getColor();
         pointcloudGLData.indexData[i] = pointcloud.getVerts()[i]->idx();
+        pointcloudGLData.customIntData[i] = pointcloud.getVerts()[i]->getCustomInt();
+        pointcloudGLData.customVecData[i] = pointcloud.getVerts()[i]->getCustomVec();
     }
 
     return pointcloudGLData;

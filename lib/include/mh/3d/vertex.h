@@ -15,9 +15,11 @@ class Vertex
 public:
     Vertex(Eigen::Vector3f position,
            int idx)
-    : m_position(position),
-      m_color(0.0f, 0.0f, 0.0f),
-      m_idx(idx) {}
+    : m_position(position)
+    , m_color(0.0f, 0.0f, 0.0f)
+    , m_idx(idx)
+    , m_custom_int(0)
+    , m_custom_vec(0.0f, 0.0f, 0.0f) {}
 
     EXPOSE            (Eigen::Vector3f, Position,      m_position)
     EXPOSE            (Eigen::Vector3f, Color,         m_color)
@@ -30,6 +32,9 @@ public:
 
     int idx (void) const { return m_idx; }
 
+    EXPOSE            (int,             CustomInt,     m_custom_int)
+    EXPOSE            (Eigen::Vector3f, CustomVec,     m_custom_vec)
+
 protected:
 
 private:
@@ -37,6 +42,9 @@ private:
     Eigen::Vector3f                      m_color;
 
     int                                  m_idx; // index in mesh
+
+    int                                  m_custom_int;
+    Eigen::Vector3f                      m_custom_vec;
 
     std::shared_ptr<HalfEdge>            m_halfedge;
     std::vector<std::shared_ptr<Wedge> > m_wedges;

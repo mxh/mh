@@ -14,11 +14,13 @@ class Mesh;
 class MeshGLState
 {
 public:
-    static constexpr int POSITION_LOCATION = 0;
-    static constexpr int NORMAL_LOCATION   = 1;
-    static constexpr int COLOR_LOCATION    = 2;
-    static constexpr int INDEX_LOCATION    = 3;
-    static constexpr int TEXTURE_LOCATION  = 4;
+    static constexpr int POSITION_LOCATION   = 0;
+    static constexpr int NORMAL_LOCATION     = 1;
+    static constexpr int COLOR_LOCATION      = 2;
+    static constexpr int INDEX_LOCATION      = 3;
+    static constexpr int CUSTOM_INT_LOCATION = 4;
+    static constexpr int CUSTOM_VEC_LOCATION = 5;
+    static constexpr int TEXTURE_LOCATION    = 6;
 
     MeshGLState(Mesh & mesh) : m_mesh(mesh), m_vboCreated(false) {}
     MeshGLState(MeshGLState & rhs)
@@ -47,6 +49,8 @@ private:
     GLuint m_normalVboID;
     GLuint m_colorVboID;
     GLuint m_indexVboID;
+    GLuint m_customIntVboID;
+    GLuint m_customVecVboID;
     GLuint m_textureVboID;
 
 }; // class MeshGLState
@@ -57,6 +61,8 @@ struct MeshGLData
     std::vector<Eigen::Vector3f> normalData;
     std::vector<Eigen::Vector3f> colorData;
     std::vector<unsigned int>    indexData;
+    std::vector<int>             customIntData;
+    std::vector<Eigen::Vector3f> customVecData;
 
     std::vector<Eigen::Vector3i> faceData;
 
