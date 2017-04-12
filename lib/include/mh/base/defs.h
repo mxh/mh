@@ -42,6 +42,11 @@ inline bool assertFailure(const char * msg, const char * file, int line)
     std::shared_ptr<TYPE> get##NAME(void) { return VARNAME; } \
     void set##NAME(std::shared_ptr<TYPE> val) { VARNAME = val; }
 
+#define EXPOSE_PTR(TYPE, NAME, VARNAME) \
+    const TYPE * get##NAME(void) const { return VARNAME; } \
+          TYPE * get##NAME(void)       { return VARNAME; } \
+    void set##NAME(TYPE * val) { VARNAME = val; }
+
 #define MH_DEFAULT_VIEWER_WIDTH  1280
 #define MH_DEFAULT_VIEWER_HEIGHT 720
 #define MH_DEFAULT_VIEWER_TITLE  "Untitled viewer"

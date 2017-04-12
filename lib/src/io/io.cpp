@@ -117,32 +117,35 @@ std::vector<std::shared_ptr<Mesh> > loadMeshesFromOBJ(const std::string & path)
                 mesh->getHalfEdges().push_back(he_1);
                 mesh->getHalfEdges().push_back(he_2);
 
-                he_0->setVertex(vert_0);
-                he_1->setVertex(vert_1);
-                he_2->setVertex(vert_2);
+                he_0->setVertex(vert_0.get());
+                he_1->setVertex(vert_1.get());
+                he_2->setVertex(vert_2.get());
 
-                he_0->setFace(face);
-                he_1->setFace(face);
-                he_2->setFace(face);
+                he_0->setFace(face.get());
+                he_1->setFace(face.get());
+                he_2->setFace(face.get());
 
-                he_0->setNext(he_1);
-                he_1->setNext(he_2);
-                he_2->setNext(he_0);
+                he_0->setNext(he_1.get());
+                he_1->setNext(he_2.get());
+                he_2->setNext(he_0.get());
 
-                vert_2->setHalfEdge(he_0);
-                vert_0->setHalfEdge(he_1);
-                vert_1->setHalfEdge(he_2);
+                vert_2->setHalfEdge(he_0.get());
+                vert_0->setHalfEdge(he_1.get());
+                vert_1->setHalfEdge(he_2.get());
 
-                face->setHalfEdge(he_0);
+                face->setHalfEdge(he_0.get());
 
                 face->getWedges().resize(3);
 
-                face->getWedges()[0] = std::make_shared<Wedge>(vert_0, face);
-                face->getWedges()[1] = std::make_shared<Wedge>(vert_1, face);
-                face->getWedges()[2] = std::make_shared<Wedge>(vert_2, face);
-                mesh->getWedges().push_back(face->getWedges()[0]);
-                mesh->getWedges().push_back(face->getWedges()[1]);
-                mesh->getWedges().push_back(face->getWedges()[2]);
+                auto wedge_0 = std::make_shared<Wedge>(vert_0.get(), face.get());
+                auto wedge_1 = std::make_shared<Wedge>(vert_1.get(), face.get());
+                auto wedge_2 = std::make_shared<Wedge>(vert_2.get(), face.get());
+                face->getWedges()[0] = wedge_0.get();
+                face->getWedges()[1] = wedge_1.get();
+                face->getWedges()[2] = wedge_2.get();
+                mesh->getWedges().push_back(wedge_0);
+                mesh->getWedges().push_back(wedge_1);
+                mesh->getWedges().push_back(wedge_2);
 
                 if (vert_0_idx.texcoord_index >= 0)
                 {

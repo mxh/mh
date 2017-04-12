@@ -18,15 +18,15 @@ class Face
 public:
     Face(int idx) : m_idx(idx) {}
 
-    EXPOSE_SHARED_PTR(HalfEdge, HalfEdge, m_halfedge)
+    EXPOSE_PTR(HalfEdge, HalfEdge, m_halfedge)
 
     int                                          idx()                 const { return m_idx; }
 
-    std::shared_ptr<const Vertex>                getVertex(size_t idx) const;
-    std::shared_ptr<Vertex>                      getVertex(size_t idx);
+    const Vertex * getVertex(size_t idx) const;
+          Vertex * getVertex(size_t idx);
 
-    const std::vector<std::shared_ptr<Wedge> > & getWedges()           const { return m_wedges; }
-          std::vector<std::shared_ptr<Wedge> > & getWedges()                 { return m_wedges; }
+    const std::vector<Wedge *> & getWedges() const { return m_wedges; }
+          std::vector<Wedge *> & getWedges()       { return m_wedges; }
 
     Eigen::Vector3f               getEdge        (size_t idx)          const;
     Eigen::Vector3f               getFaceNormal  (void)                const;
@@ -34,10 +34,10 @@ public:
 protected:
 
 private:
-    int                                        m_idx; // index in mesh
+    int                  m_idx; // index in mesh
 
-    std::shared_ptr<HalfEdge>                  m_halfedge;
-    std::vector<std::shared_ptr<Wedge> >       m_wedges;
+    HalfEdge *           m_halfedge;
+    std::vector<Wedge *> m_wedges;
 
 }; // class Face
 

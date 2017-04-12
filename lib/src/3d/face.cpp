@@ -5,7 +5,7 @@
 namespace mh
 {
 
-std::shared_ptr<const Vertex> Face::getVertex(size_t idx) const
+const Vertex * Face::getVertex(size_t idx) const
 {
     MH_ASSERT(idx < 3); // we deal only in triangles in these parts
 
@@ -25,7 +25,7 @@ std::shared_ptr<const Vertex> Face::getVertex(size_t idx) const
     return nullptr;
 }
 
-std::shared_ptr<Vertex> Face::getVertex(size_t idx)
+Vertex * Face::getVertex(size_t idx)
 {
     MH_ASSERT(idx < 3); // we deal only in triangles in these parts
 

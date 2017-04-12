@@ -12,13 +12,10 @@ namespace mh
 class Wedge
 {
 public:
-    Wedge(std::shared_ptr<Vertex> vertex, std::shared_ptr<Face> face) : m_vertex(vertex), m_face(face), m_hasTextureCoords(false) {}
+    Wedge(Vertex * vertex, Face * face) : m_vertex(vertex), m_face(face), m_hasTextureCoords(false) {}
 
-    std::shared_ptr<Vertex>       getVertex()       { return m_vertex; }
-    std::shared_ptr<const Vertex> getVertex() const { return m_vertex; }
-
-    std::shared_ptr<Face>         getFace()         { return m_face; }
-    std::shared_ptr<const Face>   getFace()   const { return m_face; }
+    EXPOSE_PTR(Vertex, Vertex, m_vertex)
+    EXPOSE_PTR(Face, Face, m_face)
 
     void   setTextureCoords(float2 textureCoords)       { m_textureCoords = textureCoords; m_hasTextureCoords = true; }
     float2 getTextureCoords()                     const { return m_textureCoords; }
@@ -30,12 +27,12 @@ public:
 protected:
 
 private:
-    std::shared_ptr<Vertex> m_vertex;
-    std::shared_ptr<Face>   m_face;
+    Vertex *        m_vertex;
+    Face *          m_face;
 
-    bool                    m_hasTextureCoords;
-    float2                  m_textureCoords;
-    Eigen::Vector3f         m_normal;
+    bool            m_hasTextureCoords;
+    float2          m_textureCoords;
+    Eigen::Vector3f m_normal;
 
 }; // class Wedge
 

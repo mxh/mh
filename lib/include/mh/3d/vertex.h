@@ -21,14 +21,14 @@ public:
     , m_custom_int(0)
     , m_custom_vec(0.0f, 0.0f, 0.0f) {}
 
-    EXPOSE            (Eigen::Vector3f, Position,      m_position)
-    EXPOSE            (Eigen::Vector3f, Color,         m_color)
+    EXPOSE     (Eigen::Vector3f, Position, m_position)
+    EXPOSE     (Eigen::Vector3f, Color,    m_color)
 
-    EXPOSE_SHARED_PTR (HalfEdge,        HalfEdge, m_halfedge)
+    EXPOSE_PTR (HalfEdge,        HalfEdge, m_halfedge)
 
-    void addWedge(std::shared_ptr<Wedge> wedge)                    { m_wedges.push_back(wedge); }
-    const std::vector<std::shared_ptr<Wedge> > & getWedges() const { return m_wedges; }
-          std::vector<std::shared_ptr<Wedge> > & getWedges()       { return m_wedges; }
+    void addWedge(Wedge * wedge)                   { m_wedges.push_back(wedge); }
+    const std::vector<Wedge *> & getWedges() const { return m_wedges; }
+          std::vector<Wedge *> & getWedges()       { return m_wedges; }
 
     int idx (void) const { return m_idx; }
 
@@ -38,16 +38,16 @@ public:
 protected:
 
 private:
-    Eigen::Vector3f                      m_position;
-    Eigen::Vector3f                      m_color;
+    Eigen::Vector3f      m_position;
+    Eigen::Vector3f      m_color;
 
-    int                                  m_idx; // index in mesh
+    int                  m_idx; // index in mesh
 
-    int                                  m_custom_int;
-    Eigen::Vector3f                      m_custom_vec;
+    int                  m_custom_int;
+    Eigen::Vector3f      m_custom_vec;
 
-    std::shared_ptr<HalfEdge>            m_halfedge;
-    std::vector<std::shared_ptr<Wedge> > m_wedges;
+    HalfEdge *           m_halfedge;
+    std::vector<Wedge *> m_wedges;
 
 }; // class Vertex
 
