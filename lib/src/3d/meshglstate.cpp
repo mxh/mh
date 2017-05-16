@@ -88,7 +88,7 @@ void MeshGLState::draw()
     glBindVertexArray(0);
 }
 
-MeshGLData getMeshGLData(Mesh & mesh)
+MeshGLData getMeshGLData(const Mesh & mesh)
 {
     MeshGLData meshGLData;
 

@@ -585,6 +585,8 @@ enum ImGuiKey_
     ImGuiKey_D,         // added by Moos
     ImGuiKey_R,         // added by Moos
     ImGuiKey_F,         // added by Moos
+    ImGuiKey_T,         // added by Moos
+    ImGuiKey_G,         // added by Moos
     ImGuiKey_C,         // for text edit CTRL+C: copy
     ImGuiKey_V,         // for text edit CTRL+V: paste
     ImGuiKey_X,         // for text edit CTRL+X: cut

@@ -19,6 +19,8 @@
 namespace mh
 {
 
+class BVH;
+
 class Mesh
 {
 public:
@@ -47,6 +49,11 @@ public:
 
     const Transform                               & getTransform()     const { return m_transform; }
           Transform                               & getTransform()           { return m_transform; }
+
+          bool                                      hasBVH()           const { return m_bvh != nullptr; }
+          void                                      setBVH(const std::shared_ptr<BVH> & bvh) { m_bvh = bvh; } 
+    const std::shared_ptr<BVH>                    & getBVH()           const { return m_bvh; }
+          std::shared_ptr<BVH>                    & getBVH()                 { return m_bvh; }   
 
           // TODO: make this more robust
           bool                                      hasTextureCoords() const { return m_wedges[0]->hasTextureCoords(); }
@@ -85,6 +92,8 @@ private:
     std::shared_ptr<Material>               m_material;
 
     Transform                               m_transform;
+
+    std::shared_ptr<BVH>                    m_bvh = nullptr;
 
     // cached variables & gl state
     mutable bool                            m_dirtyBB;

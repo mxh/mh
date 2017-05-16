@@ -322,6 +322,8 @@ bool    ImGui_ImplGlfwGL3_Init(GLFWwindow* window, bool install_callbacks)
     io.KeyMap[ImGuiKey_D] = GLFW_KEY_D;
     io.KeyMap[ImGuiKey_R] = GLFW_KEY_R;
     io.KeyMap[ImGuiKey_F] = GLFW_KEY_F;
+    io.KeyMap[ImGuiKey_T] = GLFW_KEY_T;
+    io.KeyMap[ImGuiKey_G] = GLFW_KEY_G;
     io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
     io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
     io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;

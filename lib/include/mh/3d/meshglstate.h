@@ -69,7 +69,7 @@ struct MeshGLData
     std::vector<float2>          textureCoordsData;
 }; // struct MeshGLData
 
-MeshGLData getMeshGLData(Mesh & mesh);
+MeshGLData getMeshGLData(const Mesh & mesh);
 
 } // namespace mh
 

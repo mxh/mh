@@ -9,6 +9,8 @@
 #include "mh/ext/gl3w/gl3w.h"
 #include <GLFW/glfw3.h>
 
+#include "mh/ext/imgui/imgui.h"
+
 namespace mh
 {
 
@@ -117,6 +119,25 @@ private:
     MouseCallbackConfig * m_mouseCallbackConfig;
 
 }; // class MouseCallbackManager
+
+inline void imgui_callback_selector(MouseCallbackConfig & callback_config, int * state)
+{
+    for (size_t i = 0; i < callback_config.getCallbacks().size() - 1; ++i)
+    {
+        if (ImGui::RadioButton(callback_config.getCallbacks()[i]->getUIName(), state,
+            i))
+        {
+            callback_config.setActiveCallback(callback_config.getCallbacks()[i]->getName());
+        }
+        ImGui::SameLine();
+    }
+
+    if (ImGui::RadioButton(callback_config.getCallbacks()[callback_config.getCallbacks().size() - 1]->getUIName(), state,
+        callback_config.getCallbacks().size() - 1))
+    {
+        callback_config.setActiveCallback(callback_config.getCallbacks()[callback_config.getCallbacks().size() - 1]->getName());
+    }
+}
 
 } // namespace mh 
 

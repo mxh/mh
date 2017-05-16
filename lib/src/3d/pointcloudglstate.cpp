@@ -68,7 +68,7 @@ void PointcloudGLState::draw()
     glBindVertexArray(0);
 }
 
-PointcloudGLData getPointcloudGLData(Mesh & pointcloud)
+PointcloudGLData getPointcloudGLData(const Mesh & pointcloud)
 {
     PointcloudGLData pointcloudGLData;
 

@@ -60,7 +60,7 @@ struct PointcloudGLData
     std::vector<Eigen::Vector3f> customVecData;
 }; // struct PointcloudGLData
 
-PointcloudGLData getPointcloudGLData(Mesh & pointcloud);
+PointcloudGLData getPointcloudGLData(const Mesh & pointcloud);
 
 } // namespace mh
 
