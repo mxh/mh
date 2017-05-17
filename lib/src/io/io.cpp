@@ -1,5 +1,8 @@
 #include "mh/io/io.h"
 
+#include <fstream>
+#include <unordered_map>
+
 #include "mh/gpu/texture_manager.h"
 
 #define TRANSFER_TOBJ_VERT(IDX) \
@@ -197,6 +200,143 @@ std::vector<std::shared_ptr<Mesh> > loadMeshesFromOBJ(const std::string & path)
     }
 
     return meshes;
+}
+
+
+std::vector<std::shared_ptr<Mesh>> loadMeshesFromBin(const std::string & path)
+{
+    std::ifstream in_file;
+    in_file.open(path, std::ios::binary | std::ios::in);
+
+    int n_meshes;
+    in_file.read(reinterpret_cast<char*>(&n_meshes), sizeof(int));
+    std::vector<std::shared_ptr<Mesh>> meshes(n_meshes);
+    for (int mesh_idx = 0; mesh_idx < n_meshes; ++mesh_idx)
+    {
+        std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
+
+        int n_verts;
+        in_file.read(reinterpret_cast<char*>(&n_verts), sizeof(int));
+        mesh->getVerts().resize(n_verts);
+        std::unordered_map<size_t, size_t> vert_idx_map;
+        for (int vert_idx = 0; vert_idx < n_verts; ++vert_idx)
+        {
+            int idx;
+            Eigen::Vector3f pos;
+            in_file.read(reinterpret_cast<char*>(&idx), sizeof(int));
+            in_file.read(reinterpret_cast<char*>(&pos(0)), sizeof(float));
+            in_file.read(reinterpret_cast<char*>(&pos(1)), sizeof(float));
+            in_file.read(reinterpret_cast<char*>(&pos(2)), sizeof(float));
+            auto vert = std::make_shared<Vertex>(pos, idx);
+    
+            mesh->getVerts()[vert_idx] = vert;
+            vert_idx_map[idx] = vert_idx;
+        }
+
+        int n_faces;
+        in_file.read(reinterpret_cast<char*>(&n_faces), sizeof(int));
+        mesh->getFaces().resize(n_faces);
+        for (int face_idx = 0; face_idx < n_faces; ++face_idx)
+        {
+            int idx;
+            int vert_0_idx;
+            int vert_1_idx;
+            int vert_2_idx;
+            in_file.read(reinterpret_cast<char*>(&idx), sizeof(int));
+            in_file.read(reinterpret_cast<char*>(&vert_0_idx), sizeof(int));
+            in_file.read(reinterpret_cast<char*>(&vert_1_idx), sizeof(int));
+            in_file.read(reinterpret_cast<char*>(&vert_2_idx), sizeof(int));
+
+            auto face = std::make_shared<Face>(idx);
+            mesh->getFaces()[face_idx] = face;
+
+            auto vert_0 = mesh->getVerts()[vert_idx_map[vert_0_idx]];
+            auto vert_1 = mesh->getVerts()[vert_idx_map[vert_1_idx]];
+            auto vert_2 = mesh->getVerts()[vert_idx_map[vert_2_idx]];
+
+            auto he_0 = std::make_shared<HalfEdge>();
+            auto he_1 = std::make_shared<HalfEdge>();
+            auto he_2 = std::make_shared<HalfEdge>();
+            mesh->getHalfEdges().push_back(he_0);
+            mesh->getHalfEdges().push_back(he_1);
+            mesh->getHalfEdges().push_back(he_2);
+
+            he_0->setVertex(vert_0.get());
+            he_1->setVertex(vert_1.get());
+            he_2->setVertex(vert_2.get());
+
+            he_0->setFace(face.get());
+            he_1->setFace(face.get());
+            he_2->setFace(face.get());
+
+            he_0->setNext(he_1.get());
+            he_1->setNext(he_2.get());
+            he_2->setNext(he_0.get());
+
+            vert_2->setHalfEdge(he_0.get());
+            vert_0->setHalfEdge(he_1.get());
+            vert_1->setHalfEdge(he_2.get());
+
+            face->setHalfEdge(he_0.get());
+
+            face->getWedges().resize(3);
+
+            auto wedge_0 = std::make_shared<Wedge>(vert_0.get(), face.get());
+            auto wedge_1 = std::make_shared<Wedge>(vert_1.get(), face.get());
+            auto wedge_2 = std::make_shared<Wedge>(vert_2.get(), face.get());
+            face->getWedges()[0] = wedge_0.get();
+            face->getWedges()[1] = wedge_1.get();
+            face->getWedges()[2] = wedge_2.get();
+            mesh->getWedges().push_back(wedge_0);
+            mesh->getWedges().push_back(wedge_1);
+            mesh->getWedges().push_back(wedge_2);
+
+        }
+
+        mesh->setMaterial(std::make_shared<Material>());
+        meshes[mesh_idx] = mesh;
+    }
+
+    return meshes;
+}
+
+void saveMeshesToBin(const std::string & filename, const std::vector<std::shared_ptr<Mesh>> & meshes)
+{
+    std::ofstream out_file;
+    out_file.open(filename, std::ios::binary | std::ios::out);
+
+    int n_meshes = meshes.size();
+    out_file.write(reinterpret_cast<char*>(&n_meshes), sizeof(int));
+    for (size_t mesh_idx = 0; mesh_idx < meshes.size(); ++mesh_idx)
+    {
+        int n_verts = meshes[mesh_idx]->getVerts().size();
+        out_file.write(reinterpret_cast<char*>(&n_verts), sizeof(int));
+        for (const auto & vert : meshes[mesh_idx]->getVerts())
+        {
+            int idx = vert->idx();
+            Eigen::Vector3f pos = vert->getPosition();
+            out_file.write(reinterpret_cast<char*>(&idx), sizeof(int));
+            out_file.write(reinterpret_cast<char*>(&pos(0)), sizeof(float));
+            out_file.write(reinterpret_cast<char*>(&pos(1)), sizeof(float));
+            out_file.write(reinterpret_cast<char*>(&pos(2)), sizeof(float));
+        }
+
+        int n_faces = meshes[mesh_idx]->getFaces().size();
+        out_file.write(reinterpret_cast<char*>(&n_faces), sizeof(int));
+        for (const auto & face : meshes[mesh_idx]->getFaces())
+        {
+            int idx = face->idx();
+            int vert_0_idx = face->getVertex(0)->idx();
+            int vert_1_idx = face->getVertex(1)->idx();
+            int vert_2_idx = face->getVertex(2)->idx();
+            out_file.write(reinterpret_cast<char*>(&idx), sizeof(int));
+            out_file.write(reinterpret_cast<char*>(&vert_0_idx), sizeof(int));
+            out_file.write(reinterpret_cast<char*>(&vert_1_idx), sizeof(int));
+            out_file.write(reinterpret_cast<char*>(&vert_2_idx), sizeof(int));
+        }
+    }
+
+    out_file.close();
 }
 
 } // namespace mh
