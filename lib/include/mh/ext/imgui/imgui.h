@@ -592,6 +592,16 @@ enum ImGuiKey_
     ImGuiKey_X,         // for text edit CTRL+X: cut
     ImGuiKey_Y,         // for text edit CTRL+Y: redo
     ImGuiKey_Z,         // for text edit CTRL+Z: undo
+    ImGuiKey_N0,        // added by Moos
+    ImGuiKey_N1,        // added by Moos
+    ImGuiKey_N2,        // added by Moos
+    ImGuiKey_N3,        // added by Moos
+    ImGuiKey_N4,        // added by Moos
+    ImGuiKey_N5,        // added by Moos
+    ImGuiKey_N6,        // added by Moos
+    ImGuiKey_N7,        // added by Moos
+    ImGuiKey_N8,        // added by Moos
+    ImGuiKey_N9,        // added by Moos
     ImGuiKey_Plus,      // added by Moos
     ImGuiKey_Minus,     // added by Moos
     ImGuiKey_COUNT
